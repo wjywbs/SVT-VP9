@@ -361,6 +361,8 @@ static EbSpatialFullDistType FUNC_TABLE spatialfull_distortion_kernel_func_ptr_a
      // 16x16
      eb_vp9_spatial_full_distortion_kernel,
      // 32x32
+     eb_vp9_spatial_full_distortion_kernel,
+     // 64x64
      eb_vp9_spatial_full_distortion_kernel},
 #ifdef ARCH_X86_64
     // ASM_AVX2
