@@ -560,6 +560,7 @@ void eb_vp9_lpf_horizontal_16_c(uint8_t *s, int pitch, const uint8_t *blimit, co
                                 const uint8_t *thresh);
 void eb_vp9_lpf_horizontal_16_avx2(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                    const uint8_t *thresh);
+void eb_vp9_lpf_horizontal_16_neon(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit, const uint8_t *thresh);
 RTCD_EXTERN void (*eb_vp9_lpf_horizontal_16)(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                              const uint8_t *thresh);
 
@@ -567,6 +568,7 @@ void eb_vp9_lpf_horizontal_16_dual_c(uint8_t *s, int pitch, const uint8_t *blimi
                                      const uint8_t *thresh);
 void eb_vp9_lpf_horizontal_16_dual_avx2(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                         const uint8_t *thresh);
+void eb_vp9_lpf_horizontal_16_dual_neon(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit, const uint8_t *thresh);
 RTCD_EXTERN void (*eb_vp9_lpf_horizontal_16_dual)(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                                   const uint8_t *thresh);
 
@@ -575,6 +577,7 @@ void eb_vp9_lpf_horizontal_4_c(uint8_t *s, int pitch, const uint8_t *blimit, con
                                const uint8_t *thresh);
 void eb_vp9_lpf_horizontal_4_sse2(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                   const uint8_t *thresh);
+void eb_vp9_lpf_horizontal_4_neon(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit, const uint8_t *thresh);
 RTCD_EXTERN void (*eb_vpx_lpf_horizontal_4)(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                             const uint8_t *thresh);
 
@@ -584,6 +587,7 @@ void eb_vp9_lpf_horizontal_4_dual_c(uint8_t *s, int pitch, const uint8_t *blimit
 void eb_vp9_lpf_horizontal_4_dual_sse2(uint8_t *s, int pitch, const uint8_t *blimit0, const uint8_t *limit0,
                                        const uint8_t *thresh0, const uint8_t *blimit1, const uint8_t *limit1,
                                        const uint8_t *thresh1);
+void eb_vp9_lpf_horizontal_4_dual_neon(uint8_t *s, int pitch, const uint8_t *blimit0, const uint8_t *limit0, const uint8_t *thresh0, const uint8_t *blimit1, const uint8_t *limit1, const uint8_t *thresh1);
 RTCD_EXTERN void (*eb_vpx_lpf_horizontal_4_dual)(uint8_t *s, int pitch, const uint8_t *blimit0, const uint8_t *limit0,
                                                  const uint8_t *thresh0, const uint8_t *blimit1, const uint8_t *limit1,
                                                  const uint8_t *thresh1);
@@ -592,6 +596,7 @@ void eb_vp9_lpf_horizontal_8_c(uint8_t *s, int pitch, const uint8_t *blimit, con
                                const uint8_t *thresh);
 void eb_vp9_lpf_horizontal_8_sse2(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                   const uint8_t *thresh);
+void eb_vp9_lpf_horizontal_8_neon(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit, const uint8_t *thresh);
 RTCD_EXTERN void (*eb_vpx_lpf_horizontal_8)(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                             const uint8_t *thresh);
 
@@ -601,6 +606,7 @@ void eb_vp9_lpf_horizontal_8_dual_c(uint8_t *s, int pitch, const uint8_t *blimit
 void eb_vp9_lpf_horizontal_8_dual_sse2(uint8_t *s, int pitch, const uint8_t *blimit0, const uint8_t *limit0,
                                        const uint8_t *thresh0, const uint8_t *blimit1, const uint8_t *limit1,
                                        const uint8_t *thresh1);
+void eb_vp9_lpf_horizontal_8_dual_neon(uint8_t *s, int pitch, const uint8_t *blimit0, const uint8_t *limit0, const uint8_t *thresh0, const uint8_t *blimit1, const uint8_t *limit1, const uint8_t *thresh1);
 RTCD_EXTERN void (*eb_vpx_lpf_horizontal_8_dual)(uint8_t *s, int pitch, const uint8_t *blimit0, const uint8_t *limit0,
                                                  const uint8_t *thresh0, const uint8_t *blimit1, const uint8_t *limit1,
                                                  const uint8_t *thresh1);
@@ -609,6 +615,7 @@ void eb_vp9_lpf_vertical_16_c(uint8_t *s, int pitch, const uint8_t *blimit, cons
                               const uint8_t *thresh);
 void eb_vp9_lpf_vertical_16_sse2(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                  const uint8_t *thresh);
+void eb_vp9_lpf_vertical_16_neon(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit, const uint8_t *thresh);
 RTCD_EXTERN void (*eb_vpx_lpf_vertical_16)(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                            const uint8_t *thresh);
 
@@ -617,12 +624,14 @@ void eb_vp9_lpf_vertical_16_dual_c(uint8_t *s, int pitch, const uint8_t *blimit,
 void eb_vpx_lpf_vertical_16_dual_avx2(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                       const uint8_t *thresh);
 
+void eb_vp9_lpf_vertical_16_dual_neon(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit, const uint8_t *thresh);
 RTCD_EXTERN void (*eb_vpx_lpf_vertical_16_dual)(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                                 const uint8_t *thresh);
 
 void eb_vp9_lpf_vertical_4_c(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit, const uint8_t *thresh);
 void eb_vp9_lpf_vertical_4_sse2(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                 const uint8_t *thresh);
+void eb_vp9_lpf_vertical_4_neon(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit, const uint8_t *thresh);
 RTCD_EXTERN void (*eb_vpx_lpf_vertical_4)(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                           const uint8_t *thresh);
 
@@ -632,6 +641,7 @@ void eb_vp9_lpf_vertical_4_dual_c(uint8_t *s, int pitch, const uint8_t *blimit0,
 void eb_vp9_lpf_vertical_4_dual_sse2(uint8_t *s, int pitch, const uint8_t *blimit0, const uint8_t *limit0,
                                      const uint8_t *thresh0, const uint8_t *blimit1, const uint8_t *limit1,
                                      const uint8_t *thresh1);
+void eb_vp9_lpf_vertical_4_dual_neon(uint8_t *s, int pitch, const uint8_t *blimit0, const uint8_t *limit0, const uint8_t *thresh0, const uint8_t *blimit1, const uint8_t *limit1, const uint8_t *thresh1);
 RTCD_EXTERN void (*eb_vpx_lpf_vertical_4_dual)(uint8_t *s, int pitch, const uint8_t *blimit0, const uint8_t *limit0,
                                                const uint8_t *thresh0, const uint8_t *blimit1, const uint8_t *limit1,
                                                const uint8_t *thresh1);
@@ -639,6 +649,7 @@ RTCD_EXTERN void (*eb_vpx_lpf_vertical_4_dual)(uint8_t *s, int pitch, const uint
 void eb_vp9_lpf_vertical_8_c(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit, const uint8_t *thresh);
 void eb_vp9_lpf_vertical_8_sse2(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                 const uint8_t *thresh);
+void eb_vp9_lpf_vertical_8_neon(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit, const uint8_t *thresh);
 RTCD_EXTERN void (*eb_vpx_lpf_vertical_8)(uint8_t *s, int pitch, const uint8_t *blimit, const uint8_t *limit,
                                           const uint8_t *thresh);
 
@@ -648,6 +659,7 @@ void eb_vp9_lpf_vertical_8_dual_c(uint8_t *s, int pitch, const uint8_t *blimit0,
 void eb_vp9_lpf_vertical_8_dual_sse2(uint8_t *s, int pitch, const uint8_t *blimit0, const uint8_t *limit0,
                                      const uint8_t *thresh0, const uint8_t *blimit1, const uint8_t *limit1,
                                      const uint8_t *thresh1);
+void eb_vp9_lpf_vertical_8_dual_neon(uint8_t *s, int pitch, const uint8_t *blimit0, const uint8_t *limit0, const uint8_t *thresh0, const uint8_t *blimit1, const uint8_t *limit1, const uint8_t *thresh1);
 RTCD_EXTERN void (*eb_vpx_lpf_vertical_8_dual)(uint8_t *s, int pitch, const uint8_t *blimit0, const uint8_t *limit0,
                                                const uint8_t *thresh0, const uint8_t *blimit1, const uint8_t *limit1,
                                                const uint8_t *thresh1);
@@ -1772,40 +1784,72 @@ static void setup_rtcd_internal(uint32_t asm_type) {
     if (flags & HAS_AVX2)
         eb_vp9_lpf_horizontal_16 = eb_vp9_lpf_horizontal_16_avx2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_lpf_horizontal_16 = eb_vp9_lpf_horizontal_16_neon;
+#endif
     eb_vp9_lpf_horizontal_16_dual = eb_vp9_lpf_horizontal_16_dual_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_lpf_horizontal_16_dual = eb_vp9_lpf_horizontal_16_dual_avx2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_lpf_horizontal_16_dual = eb_vp9_lpf_horizontal_16_dual_neon;
 #endif
     eb_vpx_lpf_horizontal_4 = eb_vp9_lpf_horizontal_4_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_horizontal_4 = eb_vp9_lpf_horizontal_4_sse2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vpx_lpf_horizontal_4 = eb_vp9_lpf_horizontal_4_neon;
+#endif
     eb_vpx_lpf_horizontal_4_dual = eb_vp9_lpf_horizontal_4_dual_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_horizontal_4_dual = eb_vp9_lpf_horizontal_4_dual_sse2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vpx_lpf_horizontal_4_dual = eb_vp9_lpf_horizontal_4_dual_neon;
 #endif
     eb_vpx_lpf_horizontal_8 = eb_vp9_lpf_horizontal_8_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_horizontal_8 = eb_vp9_lpf_horizontal_8_sse2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vpx_lpf_horizontal_8 = eb_vp9_lpf_horizontal_8_neon;
+#endif
     eb_vpx_lpf_horizontal_8_dual = eb_vp9_lpf_horizontal_8_dual_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_horizontal_8_dual = eb_vp9_lpf_horizontal_8_dual_sse2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vpx_lpf_horizontal_8_dual = eb_vp9_lpf_horizontal_8_dual_neon;
 #endif
     eb_vpx_lpf_vertical_16 = eb_vp9_lpf_vertical_16_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_vertical_16 = eb_vp9_lpf_vertical_16_sse2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vpx_lpf_vertical_16 = eb_vp9_lpf_vertical_16_neon;
+#endif
     eb_vpx_lpf_vertical_16_dual = eb_vp9_lpf_vertical_16_dual_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vpx_lpf_vertical_16_dual = eb_vpx_lpf_vertical_16_dual_avx2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vpx_lpf_vertical_16_dual = eb_vp9_lpf_vertical_16_dual_neon;
 #endif
 
     eb_vpx_lpf_vertical_4 = eb_vp9_lpf_vertical_4_c;
@@ -1813,20 +1857,36 @@ static void setup_rtcd_internal(uint32_t asm_type) {
     if (flags & HAS_SSE2)
         eb_vpx_lpf_vertical_4 = eb_vp9_lpf_vertical_4_sse2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vpx_lpf_vertical_4 = eb_vp9_lpf_vertical_4_neon;
+#endif
     eb_vpx_lpf_vertical_4_dual = eb_vp9_lpf_vertical_4_dual_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_vertical_4_dual = eb_vp9_lpf_vertical_4_dual_sse2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vpx_lpf_vertical_4_dual = eb_vp9_lpf_vertical_4_dual_neon;
 #endif
     eb_vpx_lpf_vertical_8 = eb_vp9_lpf_vertical_8_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_vertical_8 = eb_vp9_lpf_vertical_8_sse2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vpx_lpf_vertical_8 = eb_vp9_lpf_vertical_8_neon;
+#endif
     eb_vpx_lpf_vertical_8_dual = eb_vp9_lpf_vertical_8_dual_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_vertical_8_dual = eb_vp9_lpf_vertical_8_dual_sse2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vpx_lpf_vertical_8_dual = eb_vp9_lpf_vertical_8_dual_neon;
 #endif
 #if 0
     eb_vpx_int_pro_col = eb_vpx_int_pro_col_c;

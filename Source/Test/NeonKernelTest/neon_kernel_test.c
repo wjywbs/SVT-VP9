@@ -602,6 +602,105 @@ static void test_idct(void) {
 }
 
 /*******************************************
+ * Loop filters
+ *******************************************/
+typedef void (*LpfFn)(uint8_t *, int, const uint8_t *, const uint8_t *, const uint8_t *);
+typedef void (*LpfDualFn)(uint8_t *, int, const uint8_t *, const uint8_t *, const uint8_t *, const uint8_t *,
+                          const uint8_t *, const uint8_t *);
+#define LPF(name, vert) {#name, vert, eb_vp9_lpf_##name##_c, eb_vp9_lpf_##name##_neon}
+static const struct {
+    const char *name;
+    int         vertical;
+    LpfFn       c, neon;
+} lpf_fns[] = {
+    LPF(horizontal_4, 0), LPF(horizontal_8, 0), LPF(horizontal_16, 0), LPF(horizontal_16_dual, 0),
+    LPF(vertical_4, 1),   LPF(vertical_8, 1),   LPF(vertical_16, 1),   LPF(vertical_16_dual, 1),
+};
+static const struct {
+    const char *name;
+    int         vertical;
+    LpfDualFn   c, neon;
+} lpf_dual_fns[] = {
+    LPF(horizontal_4_dual, 0), LPF(horizontal_8_dual, 0), LPF(vertical_4_dual, 1), LPF(vertical_8_dual, 1),
+};
+
+// Edge content: smooth / flat areas with a step across the edge (all filter branches), noise, random
+static void fill_edge(uint8_t *p, int stride, int vertical, int pattern) {
+    const int base = rnd_range(0, 255), step = rnd_range(-24, 24), noise = rnd_range(0, 3);
+    for (int r = 0; r < 32; r++)
+        for (int c = 0; c < 32; c++) {
+            const int across = vertical ? c : r; // position across the edge (edge between 15 and 16)
+            int       v;
+            switch (pattern % 4) {
+            case 0: v = base + (across >= 16 ? step : 0) + (noise ? (int)(rnd() % (noise + 1)) : 0); break;
+            case 1: v = base + (across - 16) * (step / 8) + (int)(rnd() % 2); break;
+            case 2: v = base + (int)(rnd() % 16) - 8 + (across >= 16 ? step * 4 : 0); break;
+            default: v = (int)(rnd() & 255); break;
+            }
+            p[r * stride + c] = (uint8_t)(v < 0 ? 0 : v > 255 ? 255 : v);
+        }
+}
+
+static void lpf_params(uint8_t *blimit, uint8_t *limit, uint8_t *thresh, int iter) {
+    // mostly encoder-like values, sometimes the extremes (blimit 255 needs the 16-bit compare)
+    if (iter % 5 == 4) {
+        *blimit = (uint8_t)rnd();
+        *limit  = (uint8_t)rnd();
+        *thresh = (uint8_t)rnd();
+    } else {
+        const int level = rnd_range(0, 63), shift = rnd_range(0, 2), sharp = rnd_range(0, 7);
+        int       lim = level >> shift;
+        if (sharp > 0 && lim > 9 - sharp)
+            lim = 9 - sharp;
+        if (lim < 1)
+            lim = 1;
+        *limit  = (uint8_t)lim;
+        *blimit = (uint8_t)(2 * (level + 2) + lim);
+        *thresh = (uint8_t)(level >> 4);
+    }
+}
+
+static void test_lpf(void) {
+    enum { STRIDE = 40, SIZE = 32 * STRIDE };
+    uint8_t *a = alloc_guarded(SIZE), *b = alloc_guarded(SIZE);
+    uint8_t  bl[2], li[2], th[2];
+    for (size_t f = 0; f < sizeof(lpf_fns) / sizeof(lpf_fns[0]); f++) {
+        const int v   = lpf_fns[f].vertical;
+        const int off = v ? 8 * STRIDE + 16 : 16 * STRIDE + 8;
+        for (int iter = 0; iter < 20000; iter++) {
+            fill_edge(a, STRIDE, v, iter);
+            memcpy(b, a, SIZE);
+            lpf_params(bl, li, th, iter);
+            lpf_fns[f].c(a + off, STRIDE, bl, li, th);
+            lpf_fns[f].neon(b + off, STRIDE, bl, li, th);
+            CHECK(!memcmp(a, b, SIZE), "lpf_%s iter %d (blimit %d limit %d thresh %d)", lpf_fns[f].name, iter, bl[0],
+                  li[0], th[0]);
+        }
+        fill_edge(a, STRIDE, v, 0);
+        memcpy(b, a, SIZE);
+        lpf_params(bl, li, th, 0);
+        BENCH(lpf_fns[f].name, 200000, lpf_fns[f].c(a + off, STRIDE, bl, li, th),
+              lpf_fns[f].neon(b + off, STRIDE, bl, li, th));
+    }
+    for (size_t f = 0; f < sizeof(lpf_dual_fns) / sizeof(lpf_dual_fns[0]); f++) {
+        const int v   = lpf_dual_fns[f].vertical;
+        const int off = v ? 8 * STRIDE + 16 : 16 * STRIDE + 8;
+        for (int iter = 0; iter < 20000; iter++) {
+            fill_edge(a, STRIDE, v, iter);
+            memcpy(b, a, SIZE);
+            lpf_params(&bl[0], &li[0], &th[0], iter);
+            lpf_params(&bl[1], &li[1], &th[1], iter / 3);
+            lpf_dual_fns[f].c(a + off, STRIDE, &bl[0], &li[0], &th[0], &bl[1], &li[1], &th[1]);
+            lpf_dual_fns[f].neon(b + off, STRIDE, &bl[0], &li[0], &th[0], &bl[1], &li[1], &th[1]);
+            CHECK(!memcmp(a, b, SIZE), "lpf_%s iter %d", lpf_dual_fns[f].name, iter);
+        }
+        BENCH(lpf_dual_fns[f].name, 200000,
+              lpf_dual_fns[f].c(a + off, STRIDE, &bl[0], &li[0], &th[0], &bl[1], &li[1], &th[1]),
+              lpf_dual_fns[f].neon(b + off, STRIDE, &bl[0], &li[0], &th[0], &bl[1], &li[1], &th[1]));
+    }
+}
+
+/*******************************************
  * Picture operators (addition, copy, distortion)
  *******************************************/
 static void fill_s16(int16_t *p, int n, int pattern) {
@@ -696,6 +795,7 @@ static const struct {
     {"intra", test_intra},
     {"picops", test_picops},
     {"idct", test_idct},
+    {"lpf", test_lpf},
 };
 
 int main(int argc, char **argv) {
