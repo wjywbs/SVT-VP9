@@ -1917,11 +1917,12 @@ void eb_vp9_load_default_buffer_configuration_settings(SequenceControlSet *seque
 #if defined(_WIN32) || defined(__linux__)
     if (sequence_control_set_ptr->static_config.target_socket != -1)
         core_count /= eb_vp9_num_groups;
+#endif
+    // Thread pool sizing follows -lp on every platform (affinity is Windows/Linux only)
     if (sequence_control_set_ptr->static_config.logical_processors != 0)
         core_count = sequence_control_set_ptr->static_config.logical_processors < core_count
             ? sequence_control_set_ptr->static_config.logical_processors
             : core_count;
-#endif
 
 #ifdef _WIN32
     //Handle special case on Windows
