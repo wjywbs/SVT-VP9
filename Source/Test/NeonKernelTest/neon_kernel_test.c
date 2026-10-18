@@ -23,6 +23,8 @@
 #include "EbComputeSAD_NEON.h"
 #include "EbPictureOperators_C.h"
 #include "EbPictureOperators_NEON.h"
+#include "EbAvcStyleMcp_C.h"
+#include "EbAvcStyleMcp_NEON.h"
 #include "vpx_dsp_rtcd.h"
 #include "vp9_filter.h"
 #include "vp9_rtcd.h"
@@ -779,6 +781,42 @@ static void test_picops(void) {
 }
 
 /*******************************************
+ * AVC-style ME interpolation
+ *******************************************/
+static void test_avc(void) {
+    enum { S = 96, H = 72, N = S * H };
+    static const uint32_t widths[] = {8, 16, 24, 32, 48, 64, 72, 4, 12, 5, 1, 90};
+    uint8_t *ref = alloc_guarded(N), *d_c = alloc_guarded(N), *d_n = alloc_guarded(N);
+    for (int iter = 0; iter < 3000; iter++) {
+        const uint32_t w = widths[iter % (sizeof(widths) / sizeof(widths[0]))];
+        const uint32_t h = (uint32_t)rnd_range(1, H - 3);
+        const uint32_t frac = 1 + iter % 3;
+        fill_u8(ref, N, iter % PAT_COUNT);
+        // horizontal: reads columns -1 .. w + 1 of rows 0 .. h - 1; the last byte read is the last of the buffer
+        uint8_t *rp = ref + N - ((h - 1) * S + w + 2);
+        memset(d_c, 0x5A, N);
+        memset(d_n, 0x5A, N);
+        eb_vp9_avc_style_luma_interpolation_filter_horizontal(rp, S, d_c, S, w, h, NULL, frac);
+        eb_vp9_avc_style_luma_interpolation_filter_horizontal_neon(rp, S, d_n, S, w, h, NULL, frac);
+        CHECK(!memcmp(d_c, d_n, N), "avc horizontal %ux%u frac %u", w, h, frac);
+        // vertical: reads rows -1 .. h + 1
+        rp = ref + N - ((h + 1) * S + w);
+        memset(d_c, 0x5A, N);
+        memset(d_n, 0x5A, N);
+        eb_vp9_avc_style_luma_interpolation_filter_vertical(rp, S, d_c, S, w, h, NULL, frac);
+        eb_vp9_avc_style_luma_interpolation_filter_vertical_neon(rp, S, d_n, S, w, h, NULL, frac);
+        CHECK(!memcmp(d_c, d_n, N), "avc vertical %ux%u frac %u", w, h, frac);
+    }
+    fill_u8(ref, N, PAT_RANDOM);
+    BENCH("avc horizontal 64x64", 20000,
+          eb_vp9_avc_style_luma_interpolation_filter_horizontal(ref + S + 1, S, d_c, S, 64, 64, NULL, 2),
+          eb_vp9_avc_style_luma_interpolation_filter_horizontal_neon(ref + S + 1, S, d_n, S, 64, 64, NULL, 2));
+    BENCH("avc vertical 64x64", 20000,
+          eb_vp9_avc_style_luma_interpolation_filter_vertical(ref + S + 1, S, d_c, S, 64, 64, NULL, 2),
+          eb_vp9_avc_style_luma_interpolation_filter_vertical_neon(ref + S + 1, S, d_n, S, 64, 64, NULL, 2));
+}
+
+/*******************************************
  * Main
  *******************************************/
 static const struct {
@@ -796,6 +834,7 @@ static const struct {
     {"picops", test_picops},
     {"idct", test_idct},
     {"lpf", test_lpf},
+    {"avc", test_avc},
 };
 
 int main(int argc, char **argv) {

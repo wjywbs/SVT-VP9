@@ -26,6 +26,9 @@
 #include "EbCombinedAveragingSAD_Intrinsic_AVX2.h"
 #include "EbCombinedAveragingSAD_Intrinsic_AVX512.h"
 #endif
+#ifdef ARCH_AARCH64
+#include "EbAvcStyleMcp_NEON.h"
+#endif
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -69,11 +72,18 @@ static const AvcStyleInterpolationFilterNew FUNC_TABLE
             eb_vp9_avc_style_luma_interpolation_filter_vertical_avx2_intrin, //d
 
         }
+#elif defined(ARCH_AARCH64)
+        // NEON
+        {
+            avc_style_copy_new, //copy
+            eb_vp9_avc_style_luma_interpolation_filter_horizontal_neon, //a
+            eb_vp9_avc_style_luma_interpolation_filter_vertical_neon, //d
+        },
 #else
         {
-            avc_style_copy_new, 
-            eb_vp9_avc_style_luma_interpolation_filter_horizontal, 
-            eb_vp9_avc_style_luma_interpolation_filter_vertical, 
+            avc_style_copy_new,
+            eb_vp9_avc_style_luma_interpolation_filter_horizontal,
+            eb_vp9_avc_style_luma_interpolation_filter_vertical,
         },
 #endif
 };
