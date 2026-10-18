@@ -86,6 +86,7 @@ RTCD_EXTERN void (*eb_vp9_fwht4x4)(const int16_t *input, tran_low_t *output, int
 
 void eb_vp9_iht16x16_256_add_c(const tran_low_t *input, uint8_t *output, int pitch, int tx_type);
 void eb_vp9_iht16x16_256_add_avx2(const tran_low_t *input, uint8_t *output, int pitch, int tx_type);
+void eb_vp9_iht16x16_256_add_neon(const tran_low_t *input, uint8_t *output, int pitch, int tx_type);
 RTCD_EXTERN void (*eb_vp9_iht16x16_256_add)(const tran_low_t *input, uint8_t *output, int pitch, int tx_type);
 
 void eb_vp9_iht4x4_16_add_c(const tran_low_t *input, uint8_t *dest, int stride, int tx_type);
@@ -94,6 +95,7 @@ RTCD_EXTERN void (*eb_vp9_iht4x4_16_add)(const tran_low_t *input, uint8_t *dest,
 
 void eb_vp9_iht8x8_64_add_c(const tran_low_t *input, uint8_t *dest, int stride, int tx_type);
 void eb_vp9_iht8x8_64_add_sse2(const tran_low_t *input, uint8_t *dest, int stride, int tx_type);
+void eb_vp9_iht8x8_64_add_neon(const tran_low_t *input, uint8_t *dest, int stride, int tx_type);
 RTCD_EXTERN void (*eb_vp9_iht8x8_64_add)(const tran_low_t *input, uint8_t *dest, int stride, int tx_type);
 
 void eb_vp9_quantize_fp_c(const tran_low_t *coeff_ptr, intptr_t n_coeffs, int skip_block, const int16_t *round_ptr,
@@ -215,6 +217,10 @@ static void setup_rtcd_internal_vp9(uint32_t asm_type) {
     if (flags & HAS_AVX2)
         eb_vp9_iht16x16_256_add = eb_vp9_iht16x16_256_add_avx2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_iht16x16_256_add = eb_vp9_iht16x16_256_add_neon;
+#endif
     eb_vp9_iht4x4_16_add = eb_vp9_iht4x4_16_add_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
@@ -224,6 +230,10 @@ static void setup_rtcd_internal_vp9(uint32_t asm_type) {
 #ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_iht8x8_64_add = eb_vp9_iht8x8_64_add_sse2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_iht8x8_64_add = eb_vp9_iht8x8_64_add_neon;
 #endif
 #if 0
         eb_vp9_quantize_fp = eb_vp9_quantize_fp_c;

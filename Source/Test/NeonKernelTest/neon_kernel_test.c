@@ -523,6 +523,85 @@ static void test_intra(void) {
 }
 
 /*******************************************
+ * Inverse transforms
+ *******************************************/
+typedef void (*IdctFn)(const tran_low_t *, uint8_t *, int);
+#define IDCT(name, n) {#name, n, eb_vp9_##name##_c, eb_vp9_##name##_neon}
+static const struct {
+    const char *name;
+    int         n;
+    IdctFn      c, neon;
+} idct_fns[] = {
+    IDCT(idct8x8_64_add, 8),       IDCT(idct8x8_12_add, 8),     IDCT(idct8x8_1_add, 8),
+    IDCT(idct16x16_256_add, 16),   IDCT(idct16x16_38_add, 16),  IDCT(idct16x16_10_add, 16),
+    IDCT(idct16x16_1_add, 16),     IDCT(idct32x32_1024_add, 32), IDCT(idct32x32_135_add, 32),
+    IDCT(idct32x32_34_add, 32),    IDCT(idct32x32_1_add, 32),
+};
+typedef void (*IhtFn)(const tran_low_t *, uint8_t *, int, int);
+static const struct {
+    const char *name;
+    int         n;
+    IhtFn       c, neon;
+} iht_fns[] = {
+    {"iht8x8_64_add", 8, eb_vp9_iht8x8_64_add_c, eb_vp9_iht8x8_64_add_neon},
+    {"iht16x16_256_add", 16, eb_vp9_iht16x16_256_add_c, eb_vp9_iht16x16_256_add_neon},
+};
+
+// Coefficient patterns: dequantized-like ranges, full int16 range (idct only: the C iadst overflows int there),
+// sparse (top-left only) and DC only
+static void fill_coeffs(tran_low_t *p, int n, int pattern, int full_range) {
+    for (int i = 0; i < n * n; i++) {
+        const int r = i / n, c = i % n;
+        int       v;
+        switch (pattern % 6) {
+        case 0: v = rnd_range(-4096, 4096); break;
+        case 1: v = full_range ? (int16_t)rnd() : rnd_range(-16384, 16384); break;
+        case 2: v = (r < 8 && c < 8) ? rnd_range(-2048, 2048) : 0; break;
+        case 3: v = (r < 4 && c < 4) ? rnd_range(-600, 600) : 0; break;
+        case 4: v = i == 0 ? rnd_range(-8000, 8000) : 0; break;
+        default: v = rnd_range(-40, 40); break;
+        }
+        p[i] = (tran_low_t)v;
+    }
+}
+
+static void test_idct(void) {
+    enum { STRIDE = 48 };
+    tran_low_t *coef = alloc_guarded(32 * 32 * sizeof(tran_low_t));
+    uint8_t    *d_c = alloc_guarded(32 * STRIDE), *d_n = alloc_guarded(32 * STRIDE);
+    for (size_t f = 0; f < sizeof(idct_fns) / sizeof(idct_fns[0]); f++) {
+        const int n = idct_fns[f].n;
+        for (int iter = 0; iter < 600; iter++) {
+            fill_coeffs(coef, n, iter, 1);
+            fill_u8(d_c, 32 * STRIDE, iter % PAT_COUNT);
+            memcpy(d_n, d_c, 32 * STRIDE);
+            idct_fns[f].c(coef, d_c, STRIDE);
+            idct_fns[f].neon(coef, d_n, STRIDE);
+            CHECK(!memcmp(d_c, d_n, 32 * STRIDE), "%s iter %d", idct_fns[f].name, iter);
+        }
+        fill_coeffs(coef, n, 0, 1);
+        BENCH(idct_fns[f].name, 2000000 / (n * n), idct_fns[f].c(coef, d_c, STRIDE), idct_fns[f].neon(coef, d_n, STRIDE));
+    }
+    for (size_t f = 0; f < sizeof(iht_fns) / sizeof(iht_fns[0]); f++) {
+        const int n = iht_fns[f].n;
+        for (int tx = 0; tx < 4; tx++) {
+            for (int iter = 0; iter < 600; iter++) {
+                fill_coeffs(coef, n, iter, 0);
+                fill_u8(d_c, 32 * STRIDE, iter % PAT_COUNT);
+                memcpy(d_n, d_c, 32 * STRIDE);
+                iht_fns[f].c(coef, d_c, STRIDE, tx);
+                iht_fns[f].neon(coef, d_n, STRIDE, tx);
+                CHECK(!memcmp(d_c, d_n, 32 * STRIDE), "%s tx %d iter %d", iht_fns[f].name, tx, iter);
+            }
+            char name[64];
+            snprintf(name, sizeof(name), "%s tx %d", iht_fns[f].name, tx);
+            fill_coeffs(coef, n, 0, 0);
+            BENCH(name, 2000000 / (n * n), iht_fns[f].c(coef, d_c, STRIDE, tx), iht_fns[f].neon(coef, d_n, STRIDE, tx));
+        }
+    }
+}
+
+/*******************************************
  * Picture operators (addition, copy, distortion)
  *******************************************/
 static void fill_s16(int16_t *p, int n, int pattern) {
@@ -616,6 +695,7 @@ static const struct {
     {"quantize", test_quantize},
     {"intra", test_intra},
     {"picops", test_picops},
+    {"idct", test_idct},
 };
 
 int main(int argc, char **argv) {
