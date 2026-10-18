@@ -22,6 +22,11 @@ ALWAYS_INLINE void quantize_8(const tran_low_t *coeff_ptr, tran_low_t *qcoeff_pt
     // |-32768| saturates to 32767: same result, as C clamps abs + round to 32767 and zbin <= 32767
     const int16x8_t abs_coeff = vqabsq_s16(coeff);
     const uint16x8_t in_zbin  = vcgeq_s16(abs_coeff, zbin);
+    if (!vmaxvq_u16(in_zbin)) { // all 8 in the zero bin (common at high frequencies)
+        vst1q_s16(qcoeff_ptr, vdupq_n_s16(0));
+        vst1q_s16(dqcoeff_ptr, vdupq_n_s16(0));
+        return;
+    }
     const int16x8_t tmp       = vqaddq_s16(abs_coeff, round); // clamp(abs + round, INT16_MIN, INT16_MAX)
     const int16x8_t t1        = vshrq_n_s16(vqdmulhq_s16(tmp, quant), 1);
     const int32x4_t s_lo      = vaddl_s16(vget_low_s16(t1), vget_low_s16(tmp));

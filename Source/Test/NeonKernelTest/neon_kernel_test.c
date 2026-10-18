@@ -25,6 +25,8 @@
 #include "EbPictureOperators_NEON.h"
 #include "EbAvcStyleMcp_C.h"
 #include "EbAvcStyleMcp_NEON.h"
+#include "EbComputeMean_C.h"
+#include "EbComputeMean_NEON.h"
 #include "vpx_dsp_rtcd.h"
 #include "vp9_filter.h"
 #include "vp9_rtcd.h"
@@ -817,6 +819,33 @@ static void test_avc(void) {
 }
 
 /*******************************************
+ * Block means (picture analysis)
+ *******************************************/
+static void test_mean(void) {
+    enum { S = 80, N = S * 64 };
+    static const uint32_t sizes[][2] = {{8, 8}, {16, 16}, {32, 32}, {64, 64}, {8, 4}, {24, 8}, {12, 8}};
+    uint8_t *p = alloc_guarded(N);
+    for (int iter = 0; iter < 2000; iter++) {
+        const uint32_t w = sizes[iter % 7][0], h = sizes[iter % 7][1];
+        fill_u8(p, N, iter % PAT_COUNT);
+        uint8_t *b = p + N - ((h - 1) * S + w);
+        CHECK(compute_mean(b, S, w, h) == eb_vp9_compute_mean_neon(b, S, w, h), "compute_mean %ux%u", w, h);
+        CHECK(compute_mean_of_squared_values(b, S, w, h) == eb_vp9_compute_mean_of_squared_values_neon(b, S, w, h),
+              "compute_mean_of_squared_values %ux%u", w, h);
+        b = p + N - (7 * S + 8);
+        CHECK(eb_vp9_compute_sub_mean8x8_c(b, S) == eb_vp9_compute_sub_mean8x8_neon(b, S), "sub_mean8x8");
+        CHECK(eb_vp9_compute_subd_mean_of_squared_values8x8_c(b, S) ==
+                  eb_vp9_compute_subd_mean_of_squared_values8x8_neon(b, S),
+              "subd_mean_of_squared_values8x8");
+    }
+    BENCH("compute_mean 8x8", 1000000, sink += compute_mean(p, S, 8, 8), sink += eb_vp9_compute_mean_neon(p, S, 8, 8));
+    BENCH("mean_of_squared_values 8x8", 1000000, sink += compute_mean_of_squared_values(p, S, 8, 8),
+          sink += eb_vp9_compute_mean_of_squared_values_neon(p, S, 8, 8));
+    BENCH("sub_mean8x8", 1000000, sink += eb_vp9_compute_sub_mean8x8_c(p, S),
+          sink += eb_vp9_compute_sub_mean8x8_neon(p, S));
+}
+
+/*******************************************
  * Main
  *******************************************/
 static const struct {
@@ -835,6 +864,7 @@ static const struct {
     {"idct", test_idct},
     {"lpf", test_lpf},
     {"avc", test_avc},
+    {"mean", test_mean},
 };
 
 int main(int argc, char **argv) {

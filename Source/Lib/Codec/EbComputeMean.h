@@ -10,6 +10,9 @@
 #include "EbComputeMean_SSE2.h"
 #endif
 #include "EbComputeMean_C.h"
+#ifdef ARCH_AARCH64
+#include "EbComputeMean_NEON.h"
+#endif
 #ifdef ARCH_X86_64
 #include "EbCombinedAveragingSAD_Intrinsic_AVX2.h"
 #endif
@@ -23,6 +26,9 @@ extern "C" {
 #ifdef ARCH_X86_64
 #define compute_sub_mean8x8 eb_vp9_compute_sub_mean8x8_sse2_intrin
 #define compute_subd_mean_of_squared_values8x8 eb_vp9_compute_subd_mean_of_squared_values8x8_sse2_intrin
+#elif defined(ARCH_AARCH64)
+#define compute_sub_mean8x8 eb_vp9_compute_sub_mean8x8_neon
+#define compute_subd_mean_of_squared_values8x8 eb_vp9_compute_subd_mean_of_squared_values8x8_neon
 #else
 #define compute_sub_mean8x8 eb_vp9_compute_sub_mean8x8_c
 #define compute_subd_mean_of_squared_values8x8 eb_vp9_compute_subd_mean_of_squared_values8x8_c
@@ -37,6 +43,9 @@ static const EbComputeMeanFunc compute_mean_func[2][ASM_TYPE_TOTAL] = {
 #ifdef ARCH_X86_64
      // AVX2
      eb_vp9_compute_mean8x8_avx2_intrin
+#elif defined(ARCH_AARCH64)
+     // NEON
+     eb_vp9_compute_mean_neon
 #else
      compute_mean,
 #endif
@@ -46,6 +55,9 @@ static const EbComputeMeanFunc compute_mean_func[2][ASM_TYPE_TOTAL] = {
 #ifdef ARCH_X86_64
      // AVX2
      eb_vp9_compute_mean_of_squared_values8x8_sse2_intrin
+#elif defined(ARCH_AARCH64)
+     // NEON
+     eb_vp9_compute_mean_of_squared_values_neon
 #else
      compute_mean_of_squared_values,
 #endif
