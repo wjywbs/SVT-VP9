@@ -353,7 +353,7 @@ static void eb_vp9_get_eight_horizontal_search_point_results_all85_p_us_c(MeCont
         p_sad16x16, p_best_sad32x32, p_best_sad64x64, p_best_mv32x32, p_best_mv64x64, curr_mv);
 }
 
-#ifdef DISABLE_AVX512
+#if defined(DISABLE_AVX512) || defined(ARCH_AARCH64)
 /*******************************************
 * GetEightHorizontalSearchPointResultsAll85CUs
 *******************************************/
@@ -649,7 +649,9 @@ typedef void (*EbFpSearchFunc)(MeContext *context_ptr, uint32_t list_index, uint
 static EbFpSearchFunc FUNC_TABLE
     eb_vp9_get_eight_horizontal_search_point_results_all85_p_us_func_ptr_array[ASM_TYPE_TOTAL] = {
         eb_vp9_get_eight_horizontal_search_point_results_all85_p_us_c,
-#if !defined(ARCH_X86_64)
+#if defined(ARCH_AARCH64)
+        eb_vp9_get_eight_horizontal_search_point_results_all85_p_us,
+#elif !defined(ARCH_X86_64)
         eb_vp9_get_eight_horizontal_search_point_results_all85_p_us_c,
 #elif !defined(DISABLE_AVX512)
         eb_vp9_get_eight_horizontal_search_point_results_all85_p_us_avx512_intrin

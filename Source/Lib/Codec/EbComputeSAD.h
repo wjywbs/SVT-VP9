@@ -173,7 +173,7 @@ static EbSadloopkernelNxMType FUNC_TABLE nx_m_sad_loop_kernel_func_ptr_array[ASM
 #endif
 };
 
-#ifdef DISABLE_AVX512
+#if defined(DISABLE_AVX512) || defined(ARCH_AARCH64)
 static EbGeteightsaD8x8 FUNC_TABLE
     eb_vp9_get_eight_horizontal_search_point_results_8x8_16x16_func_ptr_array[ASM_TYPE_TOTAL] = {
         // C_DEFAULT
