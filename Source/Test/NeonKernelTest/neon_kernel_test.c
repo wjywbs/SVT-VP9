@@ -24,6 +24,7 @@
 #include "vpx_dsp_rtcd.h"
 #include "vp9_filter.h"
 #include "vp9_rtcd.h"
+#include "vp9_scan.h"
 
 /*******************************************
  * Utilities
@@ -402,6 +403,80 @@ static void test_fdct(void) {
 }
 
 /*******************************************
+ * Quantization
+ *******************************************/
+typedef void (*QuantFn)(const tran_low_t *, intptr_t, int, const int16_t *, const int16_t *, const int16_t *,
+                        const int16_t *, tran_low_t *, tran_low_t *, const int16_t *, uint16_t *, const int16_t *,
+                        const int16_t *);
+
+static void quant_params(int d, int16_t *zbin, int16_t *round, int16_t *quant, int16_t *shift, int16_t *dequant) {
+    // as vp9_init_quant (zbin factor 84 / round factor 48 for AC, up to 80 / 64 for DC)
+    unsigned t = d;
+    int      l = 0;
+    while (t > 1) {
+        t >>= 1;
+        l++;
+    }
+    *quant   = (int16_t)(1 + (1 << (16 + l)) / d - (1 << 16));
+    *shift   = (int16_t)(1 << (16 - l));
+    *zbin    = (int16_t)ROUND_POWER_OF_TWO(rnd_range(64, 84) * d, 7);
+    *round   = (int16_t)((rnd_range(40, 64) * d) >> 7);
+    *dequant = (int16_t)d;
+}
+
+static void test_quantize(void) {
+    static const struct {
+        const char *name;
+        QuantFn     c, neon;
+        int         tx_size;
+    } fns[] = {
+        {"quantize_b 4x4", eb_vp9_quantize_b_c, eb_vp9_quantize_b_neon, 0},
+        {"quantize_b 8x8", eb_vp9_quantize_b_c, eb_vp9_quantize_b_neon, 1},
+        {"quantize_b 16x16", eb_vp9_quantize_b_c, eb_vp9_quantize_b_neon, 2},
+        {"quantize_b_32x32", eb_vp9_quantize_b_32x32_c, eb_vp9_quantize_b_32x32_neon, 3},
+    };
+    DECLARE_ALIGNED(16, tran_low_t, coeff[1024]);
+    DECLARE_ALIGNED(16, tran_low_t, qc_c[1024]);
+    DECLARE_ALIGNED(16, tran_low_t, dq_c[1024]);
+    DECLARE_ALIGNED(16, tran_low_t, qc_n[1024]);
+    DECLARE_ALIGNED(16, tran_low_t, dq_n[1024]);
+    for (size_t f = 0; f < sizeof(fns) / sizeof(fns[0]); f++) {
+        const int n = 16 << (2 * fns[f].tx_size);
+        for (int t = 0; t < 20000; t++) {
+            const scan_order *so = &eb_vp9_scan_orders[fns[f].tx_size][t & 3];
+            int16_t           zbin[2], round[2], quant[2], shift[2], dequant[2];
+            const int         d = t % 5 == 0 ? rnd_range(4, 16) : rnd_range(4, 1828);
+            quant_params(d, &zbin[0], &round[0], &quant[0], &shift[0], &dequant[0]);
+            quant_params(t % 3 ? d : rnd_range(4, 1828), &zbin[1], &round[1], &quant[1], &shift[1], &dequant[1]);
+            const int kind = t % 4;
+            for (int i = 0; i < n; i++) {
+                switch (kind) {
+                case 0: coeff[i] = (tran_low_t)rnd_range(-3 * d, 3 * d); break; // mostly zeros / small levels
+                case 1: coeff[i] = (tran_low_t)rnd(); break; // full int16 range
+                case 2: coeff[i] = (rnd() % 8) ? 0 : (tran_low_t)rnd_range(-40 * d, 40 * d); break; // sparse
+                default: coeff[i] = (rnd() & 1) ? 32767 : -32768; break;
+                }
+            }
+            uint16_t eob_c = 0xffff, eob_n = 0xfffe;
+            fns[f].c(coeff, n, 0, zbin, round, quant, shift, qc_c, dq_c, dequant, &eob_c, so->scan, so->iscan);
+            fns[f].neon(coeff, n, 0, zbin, round, quant, shift, qc_n, dq_n, dequant, &eob_n, so->scan, so->iscan);
+            CHECK(eob_c == eob_n && !memcmp(qc_c, qc_n, n * sizeof(tran_low_t)) &&
+                      !memcmp(dq_c, dq_n, n * sizeof(tran_low_t)),
+                  "%s d %d kind %d eob %d / %d", fns[f].name, d, kind, eob_c, eob_n);
+        }
+        int16_t zbin[2], round[2], quant[2], shift[2], dequant[2];
+        quant_params(60, &zbin[0], &round[0], &quant[0], &shift[0], &dequant[0]);
+        quant_params(60, &zbin[1], &round[1], &quant[1], &shift[1], &dequant[1]);
+        for (int i = 0; i < n; i++) coeff[i] = (rnd() % 4) ? 0 : (tran_low_t)rnd_range(-600, 600);
+        const scan_order *so = &eb_vp9_scan_orders[fns[f].tx_size][0];
+        uint16_t          eob;
+        BENCH(fns[f].name, 4000000 / n,
+              fns[f].c(coeff, n, 0, zbin, round, quant, shift, qc_c, dq_c, dequant, &eob, so->scan, so->iscan),
+              fns[f].neon(coeff, n, 0, zbin, round, quant, shift, qc_n, dq_n, dequant, &eob, so->scan, so->iscan));
+    }
+}
+
+/*******************************************
  * Main
  *******************************************/
 static const struct {
@@ -414,6 +489,7 @@ static const struct {
     {"eight_point", test_eight_point},
     {"convolve", test_convolve},
     {"fdct", test_fdct},
+    {"quantize", test_quantize},
 };
 
 int main(int argc, char **argv) {

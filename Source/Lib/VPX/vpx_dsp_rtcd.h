@@ -672,6 +672,7 @@ void eb_vp9_quantize_b_avx(const tran_low_t *coeff_ptr, intptr_t n_coeffs, int s
                            const int16_t *round_ptr, const int16_t *quant_ptr, const int16_t *quant_shift_ptr,
                            tran_low_t *qcoeff_ptr, tran_low_t *dqcoeff_ptr, const int16_t *dequant_ptr,
                            uint16_t *eob_ptr, const int16_t *scan, const int16_t *iscan);
+void eb_vp9_quantize_b_neon(const tran_low_t *coeff_ptr, intptr_t n_coeffs, int skip_block, const int16_t *zbin_ptr, const int16_t *round_ptr, const int16_t *quant_ptr, const int16_t *quant_shift_ptr, tran_low_t *qcoeff_ptr, tran_low_t *dqcoeff_ptr, const int16_t *dequant_ptr, uint16_t *eob_ptr, const int16_t *scan, const int16_t *iscan);
 RTCD_EXTERN void (*eb_vp9_quantize_b)(const tran_low_t *coeff_ptr, intptr_t n_coeffs, int skip_block,
                                       const int16_t *zbin_ptr, const int16_t *round_ptr, const int16_t *quant_ptr,
                                       const int16_t *quant_shift_ptr, tran_low_t *qcoeff_ptr, tran_low_t *dqcoeff_ptr,
@@ -687,6 +688,7 @@ void eb_vp9_quantize_b_32x32_avx(const tran_low_t *coeff_ptr, intptr_t n_coeffs,
                                  const int16_t *quant_shift_ptr, tran_low_t *qcoeff_ptr, tran_low_t *dqcoeff_ptr,
                                  const int16_t *dequant_ptr, uint16_t *eob_ptr, const int16_t *scan,
                                  const int16_t *iscan);
+void eb_vp9_quantize_b_32x32_neon(const tran_low_t *coeff_ptr, intptr_t n_coeffs, int skip_block, const int16_t *zbin_ptr, const int16_t *round_ptr, const int16_t *quant_ptr, const int16_t *quant_shift_ptr, tran_low_t *qcoeff_ptr, tran_low_t *dqcoeff_ptr, const int16_t *dequant_ptr, uint16_t *eob_ptr, const int16_t *scan, const int16_t *iscan);
 RTCD_EXTERN void (*eb_vp9_quantize_b_32x32)(const tran_low_t *coeff_ptr, intptr_t n_coeffs, int skip_block,
                                             const int16_t *zbin_ptr, const int16_t *round_ptr, const int16_t *quant_ptr,
                                             const int16_t *quant_shift_ptr, tran_low_t *qcoeff_ptr,
@@ -1726,10 +1728,18 @@ static void setup_rtcd_internal(uint32_t asm_type) {
     if (flags & HAS_AVX)
         eb_vp9_quantize_b = eb_vp9_quantize_b_avx;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_quantize_b = eb_vp9_quantize_b_neon;
+#endif
     eb_vp9_quantize_b_32x32 = eb_vp9_quantize_b_32x32_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_AVX)
         eb_vp9_quantize_b_32x32 = eb_vp9_quantize_b_32x32_avx;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_quantize_b_32x32 = eb_vp9_quantize_b_32x32_neon;
 #endif
 #if 0
     vpx_sad16x16 = vpx_sad16x16_c;
