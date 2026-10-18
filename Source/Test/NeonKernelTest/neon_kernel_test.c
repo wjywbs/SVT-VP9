@@ -477,6 +477,50 @@ static void test_quantize(void) {
 }
 
 /*******************************************
+ * Intra prediction
+ *******************************************/
+typedef void (*IntraFn)(uint8_t *, ptrdiff_t, const uint8_t *, const uint8_t *);
+// above_end / left_end: number of above / left pixels the C code reads (as a function of bs), so the buffers can
+// end at a guard page; a = above[-1] is read when needed and is always available
+#define INTRA(t, n, ae, le) {#t "_" #n "x" #n, eb_vp9_##t##_predictor_##n##x##n##_c, \
+                             eb_vp9_##t##_predictor_##n##x##n##_neon, n, ae, le}
+#define INTRA_SIZES(t, ae, le) INTRA(t, 8, ae, le), INTRA(t, 16, ae, le), INTRA(t, 32, ae, le)
+static const struct {
+    const char *name;
+    IntraFn     c, neon;
+    int         bs, above_end, left_end; // ends: 0 = bs - 1, 1 = bs, 2 = bs + 1, 3 = bs + 2, -1 = not read
+} intra_fns[] = {
+    INTRA_SIZES(d45, 2, -1),  INTRA_SIZES(d63, 3, -1),     INTRA_SIZES(d207, -1, 1),   INTRA_SIZES(d153, 0, 1),
+    INTRA_SIZES(d117, 1, 0),  INTRA_SIZES(d135, 1, 1),     INTRA_SIZES(tm, 1, 1),
+};
+
+static void test_intra(void) {
+    uint8_t  *above_buf = alloc_guarded(128);
+    uint8_t  *left_buf  = alloc_guarded(128);
+    const int stride    = 48;
+    uint8_t   dst_c[48 * 32], dst_n[48 * 32];
+    for (size_t f = 0; f < sizeof(intra_fns) / sizeof(intra_fns[0]); f++) {
+        const int bs = intra_fns[f].bs;
+        const int ae = intra_fns[f].above_end < 0 ? 0 : bs - 1 + intra_fns[f].above_end;
+        const int le = intra_fns[f].left_end < 0 ? 0 : bs - 1 + intra_fns[f].left_end;
+        const uint8_t *above = above_buf + 128 - ae;
+        const uint8_t *left  = left_buf + 128 - le;
+        for (int t = 0; t < 2000; t++) {
+            fill_u8(above_buf, 128, t % PAT_COUNT);
+            fill_u8(left_buf, 128, (t / PAT_COUNT) % PAT_COUNT);
+            fill_u8(dst_c, sizeof(dst_c), PAT_RANDOM);
+            memcpy(dst_n, dst_c, sizeof(dst_c));
+            intra_fns[f].c(dst_c, stride, above, left);
+            intra_fns[f].neon(dst_n, stride, above, left);
+            CHECK(!memcmp(dst_c, dst_n, sizeof(dst_c)), "%s t %d", intra_fns[f].name, t);
+        }
+        if (bs >= 16)
+            BENCH(intra_fns[f].name, 4000000 / (bs * bs), intra_fns[f].c(dst_c, stride, above, left),
+                  intra_fns[f].neon(dst_n, stride, above, left));
+    }
+}
+
+/*******************************************
  * Main
  *******************************************/
 static const struct {
@@ -490,6 +534,7 @@ static const struct {
     {"convolve", test_convolve},
     {"fdct", test_fdct},
     {"quantize", test_quantize},
+    {"intra", test_intra},
 };
 
 int main(int argc, char **argv) {

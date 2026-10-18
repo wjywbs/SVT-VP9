@@ -152,11 +152,13 @@ RTCD_EXTERN void (*eb_vpx_convolve_copy)(const uint8_t *src, ptrdiff_t src_strid
 
 void eb_vp9_d117_predictor_16x16_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d117_predictor_16x16_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d117_predictor_16x16_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d117_predictor_16x16)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                                 const uint8_t *left);
 
 void eb_vp9_d117_predictor_32x32_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d117_predictor_32x32_avx2(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d117_predictor_32x32_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d117_predictor_32x32)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                                 const uint8_t *left);
 
@@ -167,16 +169,19 @@ RTCD_EXTERN void (*eb_vp9_d117_predictor_4x4)(uint8_t *dst, ptrdiff_t y_stride, 
 
 void eb_vp9_d117_predictor_8x8_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d117_predictor_8x8_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d117_predictor_8x8_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d117_predictor_8x8)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                               const uint8_t *left);
 
 void eb_vp9_d135_predictor_16x16_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d135_predictor_16x16_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d135_predictor_16x16_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d135_predictor_16x16)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                                 const uint8_t *left);
 
 void eb_vp9_d135_predictor_32x32_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d135_predictor_32x32_avx2(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d135_predictor_32x32_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d135_predictor_32x32)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                                 const uint8_t *left);
 
@@ -187,6 +192,7 @@ RTCD_EXTERN void (*eb_vp9_d135_predictor_4x4)(uint8_t *dst, ptrdiff_t y_stride, 
 
 void eb_vp9_d135_predictor_8x8_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d135_predictor_8x8_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d135_predictor_8x8_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d135_predictor_8x8)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                               const uint8_t *left);
 
@@ -195,11 +201,13 @@ void eb_vp9_d153_predictor_16x16_ssse3(uint8_t *dst, ptrdiff_t y_stride, const u
 
 void eb_vp9_d153_predictor_16x16_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d153_predictor_16x16_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d153_predictor_16x16_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d153_predictor_16x16)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                                 const uint8_t *left);
 
 void eb_vp9_d153_predictor_32x32_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d153_predictor_32x32_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d153_predictor_32x32_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d153_predictor_32x32)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                                 const uint8_t *left);
 
@@ -210,16 +218,19 @@ RTCD_EXTERN void (*eb_vp9_d153_predictor_4x4)(uint8_t *dst, ptrdiff_t y_stride, 
 
 void eb_vp9_d153_predictor_8x8_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d153_predictor_8x8_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d153_predictor_8x8_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d153_predictor_8x8)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                               const uint8_t *left);
 
 void eb_vp9_d207_predictor_16x16_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d207_predictor_16x16_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d207_predictor_16x16_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d207_predictor_16x16)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                                 const uint8_t *left);
 
 void eb_vp9_d207_predictor_32x32_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d207_predictor_32x32_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d207_predictor_32x32_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d207_predictor_32x32)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                                 const uint8_t *left);
 
@@ -230,16 +241,19 @@ RTCD_EXTERN void (*eb_vp9_d207_predictor_4x4)(uint8_t *dst, ptrdiff_t y_stride, 
 
 void eb_vp9_d207_predictor_8x8_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d207_predictor_8x8_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d207_predictor_8x8_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d207_predictor_8x8)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                               const uint8_t *left);
 
 void eb_vp9_d45_predictor_16x16_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d45_predictor_16x16_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d45_predictor_16x16_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d45_predictor_16x16)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                                const uint8_t *left);
 
 void eb_vp9_d45_predictor_32x32_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d45_predictor_32x32_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d45_predictor_32x32_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d45_predictor_32x32)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                                const uint8_t *left);
 
@@ -250,6 +264,7 @@ RTCD_EXTERN void (*eb_vp9_d45_predictor_4x4)(uint8_t *dst, ptrdiff_t y_stride, c
 
 void eb_vp9_d45_predictor_8x8_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d45_predictor_8x8_sse2(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d45_predictor_8x8_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d45_predictor_8x8)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                              const uint8_t *left);
 
@@ -259,11 +274,13 @@ RTCD_EXTERN void (*eb_vp9_d45e_predictor_4x4)(uint8_t *dst, ptrdiff_t y_stride, 
 
 void eb_vp9_d63_predictor_16x16_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d63_predictor_16x16_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d63_predictor_16x16_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d63_predictor_16x16)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                                const uint8_t *left);
 
 void eb_vp9_d63_predictor_32x32_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d63_predictor_32x32_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d63_predictor_32x32_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d63_predictor_32x32)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                                const uint8_t *left);
 
@@ -274,6 +291,7 @@ RTCD_EXTERN void (*eb_vp9_d63_predictor_4x4)(uint8_t *dst, ptrdiff_t y_stride, c
 
 void eb_vp9_d63_predictor_8x8_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_d63_predictor_8x8_ssse3(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_d63_predictor_8x8_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_d63_predictor_8x8)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                              const uint8_t *left);
 
@@ -1034,11 +1052,13 @@ RTCD_EXTERN uint64_t(*vpx_sum_squares_2d_i16)(const int16_t *src, int stride, in
 #endif
 void eb_vp9_tm_predictor_16x16_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_tm_predictor_16x16_sse2(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_tm_predictor_16x16_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_tm_predictor_16x16)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                               const uint8_t *left);
 
 void eb_vp9_tm_predictor_32x32_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_tm_predictor_32x32_sse2(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_tm_predictor_32x32_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_tm_predictor_32x32)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                               const uint8_t *left);
 
@@ -1049,6 +1069,7 @@ RTCD_EXTERN void (*eb_vp9_tm_predictor_4x4)(uint8_t *dst, ptrdiff_t y_stride, co
 
 void eb_vp9_tm_predictor_8x8_c(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 void eb_vp9_tm_predictor_8x8_sse2(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
+void eb_vp9_tm_predictor_8x8_neon(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above, const uint8_t *left);
 RTCD_EXTERN void (*eb_vp9_tm_predictor_8x8)(uint8_t *dst, ptrdiff_t y_stride, const uint8_t *above,
                                             const uint8_t *left);
 
@@ -1245,15 +1266,27 @@ static void setup_rtcd_internal(uint32_t asm_type) {
     if (flags & HAS_SSSE3)
         eb_vp9_d117_predictor_8x8 = eb_vp9_d117_predictor_8x8_ssse3;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d117_predictor_8x8 = eb_vp9_d117_predictor_8x8_neon;
+#endif
     eb_vp9_d117_predictor_16x16 = eb_vp9_d117_predictor_16x16_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d117_predictor_16x16 = eb_vp9_d117_predictor_16x16_ssse3;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d117_predictor_16x16 = eb_vp9_d117_predictor_16x16_neon;
+#endif
     eb_vp9_d117_predictor_32x32 = eb_vp9_d117_predictor_32x32_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_d117_predictor_32x32 = eb_vp9_d117_predictor_32x32_avx2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d117_predictor_32x32 = eb_vp9_d117_predictor_32x32_neon;
 #endif
     eb_vp9_d135_predictor_4x4 = eb_vp9_d135_predictor_4x4_c;
 #ifdef ARCH_X86_64
@@ -1265,25 +1298,45 @@ static void setup_rtcd_internal(uint32_t asm_type) {
     if (flags & HAS_SSSE3)
         eb_vp9_d135_predictor_8x8 = eb_vp9_d135_predictor_8x8_ssse3;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d135_predictor_8x8 = eb_vp9_d135_predictor_8x8_neon;
+#endif
     eb_vp9_d135_predictor_16x16 = eb_vp9_d135_predictor_16x16_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d135_predictor_16x16 = eb_vp9_d135_predictor_16x16_ssse3;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d135_predictor_16x16 = eb_vp9_d135_predictor_16x16_neon;
 #endif
     eb_vp9_d135_predictor_32x32 = eb_vp9_d135_predictor_32x32_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_d135_predictor_32x32 = eb_vp9_d135_predictor_32x32_avx2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d135_predictor_32x32 = eb_vp9_d135_predictor_32x32_neon;
+#endif
     eb_vp9_d153_predictor_16x16 = eb_vp9_d153_predictor_16x16_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d153_predictor_16x16 = eb_vp9_d153_predictor_16x16_ssse3;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d153_predictor_16x16 = eb_vp9_d153_predictor_16x16_neon;
+#endif
     eb_vp9_d153_predictor_32x32 = eb_vp9_d153_predictor_32x32_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d153_predictor_32x32 = eb_vp9_d153_predictor_32x32_ssse3;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d153_predictor_32x32 = eb_vp9_d153_predictor_32x32_neon;
 #endif
     eb_vp9_d153_predictor_4x4 = eb_vp9_d153_predictor_4x4_c;
 #ifdef ARCH_X86_64
@@ -1295,15 +1348,27 @@ static void setup_rtcd_internal(uint32_t asm_type) {
     if (flags & HAS_SSSE3)
         eb_vp9_d153_predictor_8x8 = eb_vp9_d153_predictor_8x8_ssse3;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d153_predictor_8x8 = eb_vp9_d153_predictor_8x8_neon;
+#endif
     eb_vp9_d207_predictor_16x16 = eb_vp9_d207_predictor_16x16_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d207_predictor_16x16 = eb_vp9_d207_predictor_16x16_ssse3;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d207_predictor_16x16 = eb_vp9_d207_predictor_16x16_neon;
+#endif
     eb_vp9_d207_predictor_32x32 = eb_vp9_d207_predictor_32x32_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d207_predictor_32x32 = eb_vp9_d207_predictor_32x32_ssse3;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d207_predictor_32x32 = eb_vp9_d207_predictor_32x32_neon;
 #endif
     eb_vp9_d207_predictor_4x4 = eb_vp9_d207_predictor_4x4_c;
 #ifdef ARCH_X86_64
@@ -1315,15 +1380,27 @@ static void setup_rtcd_internal(uint32_t asm_type) {
     if (flags & HAS_SSSE3)
         eb_vp9_d207_predictor_8x8 = eb_vp9_d207_predictor_8x8_ssse3;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d207_predictor_8x8 = eb_vp9_d207_predictor_8x8_neon;
+#endif
     eb_vp9_d45_predictor_16x16 = eb_vp9_d45_predictor_16x16_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d45_predictor_16x16 = eb_vp9_d45_predictor_16x16_ssse3;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d45_predictor_16x16 = eb_vp9_d45_predictor_16x16_neon;
+#endif
     eb_vp9_d45_predictor_32x32 = eb_vp9_d45_predictor_32x32_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d45_predictor_32x32 = eb_vp9_d45_predictor_32x32_ssse3;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d45_predictor_32x32 = eb_vp9_d45_predictor_32x32_neon;
 #endif
     eb_vp9_d45_predictor_4x4 = eb_vp9_d45_predictor_4x4_c;
 #ifdef ARCH_X86_64
@@ -1335,16 +1412,28 @@ static void setup_rtcd_internal(uint32_t asm_type) {
     if (flags & HAS_SSE2)
         eb_vp9_d45_predictor_8x8 = eb_vp9_d45_predictor_8x8_sse2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d45_predictor_8x8 = eb_vp9_d45_predictor_8x8_neon;
+#endif
     eb_vp9_d45e_predictor_4x4  = eb_vp9_d45e_predictor_4x4_c;
     eb_vp9_d63_predictor_16x16 = eb_vp9_d63_predictor_16x16_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d63_predictor_16x16 = eb_vp9_d63_predictor_16x16_ssse3;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d63_predictor_16x16 = eb_vp9_d63_predictor_16x16_neon;
+#endif
     eb_vp9_d63_predictor_32x32 = eb_vp9_d63_predictor_32x32_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d63_predictor_32x32 = eb_vp9_d63_predictor_32x32_ssse3;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d63_predictor_32x32 = eb_vp9_d63_predictor_32x32_neon;
 #endif
     eb_vp9_d63_predictor_4x4 = eb_vp9_d63_predictor_4x4_c;
 #ifdef ARCH_X86_64
@@ -1355,6 +1444,10 @@ static void setup_rtcd_internal(uint32_t asm_type) {
 #ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d63_predictor_8x8 = eb_vp9_d63_predictor_8x8_ssse3;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_d63_predictor_8x8 = eb_vp9_d63_predictor_8x8_neon;
 #endif
     eb_vp9_d63e_predictor_4x4     = eb_vp9_d63e_predictor_4x4_c;
     eb_vp9_dc_128_predictor_16x16 = eb_vp9_dc_128_predictor_16x16_c;
@@ -2072,10 +2165,18 @@ static void setup_rtcd_internal(uint32_t asm_type) {
     if (flags & HAS_SSE2)
         eb_vp9_tm_predictor_16x16 = eb_vp9_tm_predictor_16x16_sse2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_tm_predictor_16x16 = eb_vp9_tm_predictor_16x16_neon;
+#endif
     eb_vp9_tm_predictor_32x32 = eb_vp9_tm_predictor_32x32_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_tm_predictor_32x32 = eb_vp9_tm_predictor_32x32_sse2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_tm_predictor_32x32 = eb_vp9_tm_predictor_32x32_neon;
 #endif
     eb_vp9_tm_predictor_4x4 = eb_vp9_tm_predictor_4x4_c;
 #ifdef ARCH_X86_64
@@ -2086,6 +2187,10 @@ static void setup_rtcd_internal(uint32_t asm_type) {
 #ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_tm_predictor_8x8 = eb_vp9_tm_predictor_8x8_sse2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_tm_predictor_8x8 = eb_vp9_tm_predictor_8x8_neon;
 #endif
     eb_vp9_v_predictor_16x16 = eb_vp9_v_predictor_16x16_c;
 #ifdef ARCH_X86_64
