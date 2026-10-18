@@ -363,6 +363,7 @@ RTCD_EXTERN void (*eb_vp9_dc_top_predictor_8x8)(uint8_t *dst, ptrdiff_t y_stride
 
 void eb_vp9_fdct16x16_c(const int16_t *input, tran_low_t *output, int stride);
 void eb_vpx_fdct16x16_avx2(const int16_t *input, tran_low_t *output, int stride);
+void eb_vp9_fdct16x16_neon(const int16_t *input, tran_low_t *output, int stride);
 RTCD_EXTERN void (*eb_vpx_fdct16x16)(const int16_t *input, tran_low_t *output, int stride);
 
 #if 0
@@ -372,10 +373,12 @@ RTCD_EXTERN void(*eb_vpx_fdct16x16_1)(const int16_t *input, tran_low_t *output, 
 #endif
 void eb_vp9_fdct32x32_c(const int16_t *input, tran_low_t *output, int stride);
 void eb_vp9_fdct32x32_avx2(const int16_t *input, tran_low_t *output, int stride);
+void eb_vp9_fdct32x32_neon(const int16_t *input, tran_low_t *output, int stride);
 RTCD_EXTERN void (*eb_vp9_fdct32x32)(const int16_t *input, tran_low_t *output, int stride);
 
 void eb_vpx_partial_fdct32x32_c(const int16_t *input, tran_low_t *output, int stride);
 void eb_vpx_partial_fdct32x32_avx2(const int16_t *input, tran_low_t *output, int stride);
+void eb_vpx_partial_fdct32x32_neon(const int16_t *input, tran_low_t *output, int stride);
 RTCD_EXTERN void (*eb_vpx_partial_fdct32x32)(const int16_t *input, tran_low_t *output, int stride);
 
 #if 0
@@ -398,6 +401,7 @@ RTCD_EXTERN void(*eb_vpx_fdct4x4_1)(const int16_t *input, tran_low_t *output, in
 #endif
 void eb_vp9_fdct8x8_c(const int16_t *input, tran_low_t *output, int stride);
 void eb_vp9_fdct8x8_avx2(const int16_t *input, tran_low_t *output, int stride);
+void eb_vp9_fdct8x8_neon(const int16_t *input, tran_low_t *output, int stride);
 RTCD_EXTERN void (*eb_vp9_fdct8x8)(const int16_t *input, tran_low_t *output, int stride);
 
 #if 0
@@ -1437,6 +1441,10 @@ static void setup_rtcd_internal(uint32_t asm_type) {
     if (flags & HAS_AVX2)
         eb_vpx_fdct16x16 = eb_vpx_fdct16x16_avx2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vpx_fdct16x16 = eb_vp9_fdct16x16_neon;
+#endif
 #if 0
     eb_vpx_fdct16x16_1 = eb_vp9_fdct16x16_1_c;
 #ifdef ARCH_X86_64
@@ -1449,10 +1457,18 @@ static void setup_rtcd_internal(uint32_t asm_type) {
     if (flags & HAS_AVX2)
         eb_vp9_fdct32x32 = eb_vp9_fdct32x32_avx2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_fdct32x32 = eb_vp9_fdct32x32_neon;
+#endif
     eb_vpx_partial_fdct32x32 = eb_vpx_partial_fdct32x32_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vpx_partial_fdct32x32 = eb_vpx_partial_fdct32x32_avx2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vpx_partial_fdct32x32 = eb_vpx_partial_fdct32x32_neon;
 #endif
 #if 0
     eb_vp9_fdct32x32_1 = eb_vp9_fdct32x32_1_c;
@@ -1473,6 +1489,10 @@ static void setup_rtcd_internal(uint32_t asm_type) {
 #ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_fdct8x8 = eb_vp9_fdct8x8_avx2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_fdct8x8 = eb_vp9_fdct8x8_neon;
 #endif
 #if 0
     eb_vpx_fdct4x4_1 = eb_vp9_fdct4x4_1_c;

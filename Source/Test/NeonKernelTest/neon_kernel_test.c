@@ -23,6 +23,7 @@
 #include "EbComputeSAD_NEON.h"
 #include "vpx_dsp_rtcd.h"
 #include "vp9_filter.h"
+#include "vp9_rtcd.h"
 
 /*******************************************
  * Utilities
@@ -318,6 +319,89 @@ static void test_convolve(void) {
 }
 
 /*******************************************
+ * Forward transforms
+ *******************************************/
+// Residual patterns: random in [-255, 255], extremes (+-255 constant / checkerboard / random sign), small values
+static void fill_residual(int16_t *p, int n, int stride, int pattern) {
+    for (int r = 0; r < n; r++)
+        for (int c = 0; c < n; c++) {
+            int16_t v;
+            switch (pattern % 7) {
+            case 0: v = (int16_t)rnd_range(-255, 255); break;
+            case 1: v = 255; break;
+            case 2: v = -255; break;
+            case 3: v = ((r ^ c) & 1) ? 255 : -255; break;
+            case 4: v = (rnd() & 1) ? 255 : -255; break;
+            case 5: v = (int16_t)rnd_range(-8, 8); break;
+            default: v = (r < n / 2) == (c < n / 2) ? 255 : -255; break;
+            }
+            p[r * stride + c] = v;
+        }
+}
+
+typedef void (*FdctFn)(const int16_t *, tran_low_t *, int);
+static const struct {
+    const char *name;
+    FdctFn      c, neon;
+    int         n;
+} fdct_fns[] = {
+    {"fdct32x32", eb_vp9_fdct32x32_c, eb_vp9_fdct32x32_neon, 32},
+    {"partial_fdct32x32", eb_vpx_partial_fdct32x32_c, eb_vpx_partial_fdct32x32_neon, 32},
+    {"fdct16x16", eb_vp9_fdct16x16_c, eb_vp9_fdct16x16_neon, 16},
+    {"fdct8x8", eb_vp9_fdct8x8_c, eb_vp9_fdct8x8_neon, 8},
+};
+
+typedef void (*FhtFn)(const int16_t *, tran_low_t *, int, int);
+static const struct {
+    const char *name;
+    FhtFn       c, neon;
+    int         n;
+} fht_fns[] = {
+    {"fht16x16", eb_vp9_fht16x16_c, eb_vp9_fht16x16_neon, 16},
+    {"fht8x8", eb_vp9_fht8x8_c, eb_vp9_fht8x8_neon, 8},
+};
+
+static void test_fdct(void) {
+    const int stride = 40;
+    int16_t  *in     = alloc_guarded(sizeof(int16_t) * stride * 32);
+    for (size_t f = 0; f < sizeof(fdct_fns) / sizeof(fdct_fns[0]); f++) {
+        const int  n = fdct_fns[f].n;
+        tran_low_t out_c[32 * 32], out_n[32 * 32];
+        for (int t = 0; t < 3000; t++) {
+            fill_residual(in, n, stride, t);
+            memset(out_c, 0x5a, sizeof(out_c));
+            memset(out_n, 0x5a, sizeof(out_n));
+            fdct_fns[f].c(in, out_c, stride);
+            fdct_fns[f].neon(in, out_n, stride);
+            CHECK(!memcmp(out_c, out_n, sizeof(out_c)), "%s pattern %d", fdct_fns[f].name, t % 7);
+        }
+        fill_residual(in, n, stride, 0);
+        char label[64];
+        snprintf(label, sizeof(label), "%s", fdct_fns[f].name);
+        BENCH(label, 200000 / n, fdct_fns[f].c(in, out_c, stride), fdct_fns[f].neon(in, out_n, stride));
+    }
+    for (size_t f = 0; f < sizeof(fht_fns) / sizeof(fht_fns[0]); f++) {
+        const int  n = fht_fns[f].n;
+        tran_low_t out_c[32 * 32], out_n[32 * 32];
+        for (int tx_type = 0; tx_type < 4; tx_type++) {
+            for (int t = 0; t < 2000; t++) {
+                fill_residual(in, n, stride, t);
+                memset(out_c, 0x5a, sizeof(out_c));
+                memset(out_n, 0x5a, sizeof(out_n));
+                fht_fns[f].c(in, out_c, stride, tx_type);
+                fht_fns[f].neon(in, out_n, stride, tx_type);
+                CHECK(!memcmp(out_c, out_n, sizeof(out_c)), "%s tx_type %d pattern %d", fht_fns[f].name, tx_type, t % 7);
+            }
+            fill_residual(in, n, stride, 0);
+            char label[64];
+            snprintf(label, sizeof(label), "%s tx_type %d", fht_fns[f].name, tx_type);
+            BENCH(label, 200000 / n, fht_fns[f].c(in, out_c, stride, tx_type),
+                  fht_fns[f].neon(in, out_n, stride, tx_type));
+        }
+    }
+}
+
+/*******************************************
  * Main
  *******************************************/
 static const struct {
@@ -329,6 +413,7 @@ static const struct {
     {"sad_loop", test_sad_loop},
     {"eight_point", test_eight_point},
     {"convolve", test_convolve},
+    {"fdct", test_fdct},
 };
 
 int main(int argc, char **argv) {
