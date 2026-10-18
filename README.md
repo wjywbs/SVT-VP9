@@ -44,7 +44,7 @@ SVT-VP9 Encoder may run on any Windows* or Linux* 64 bit operating systems. The 
 
 ### Hardware
 
-The SVT-VP9 Encoder library supports the x86 architecture
+The SVT-VP9 Encoder library supports the x86 architecture (SSE / AVX2) and arm64 / AArch64 (NEON, tested on Apple silicon with macOS). Other architectures build with the C kernels only.
 
 * __CPU Requirements__
 

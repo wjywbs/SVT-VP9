@@ -44,8 +44,8 @@ if(NOT HAVE_X86_PLATFORM AND NOT HAVE_ARM64_PLATFORM)
     set(COMPILE_C_ONLY ON)
 endif()
 
-# The x86 SIMD kernels (intrinsics + NASM) are only built on x86-64. Elsewhere
-# (e.g. arm64) the encoder runs on the C kernels.
+# The x86 SIMD kernels (intrinsics + NASM) are only built on x86-64, the NEON
+# kernels only on arm64. Elsewhere the encoder runs on the C kernels.
 if(NOT COMPILE_C_ONLY AND HAVE_X86_PLATFORM)
     enable_language(ASM_NASM)
     # C only: the NASM sources define ARCH_X86_64 themselves (x86inc.asm).
