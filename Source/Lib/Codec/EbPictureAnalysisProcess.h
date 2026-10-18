@@ -8,7 +8,9 @@
 
 #include "EbDefinitions.h"
 #include "EbSystemResourceManager.h"
+#ifdef ARCH_X86_64
 #include "EbNoiseExtractAVX2.h"
+#endif
 
 /**************************************
  * Context
@@ -43,8 +45,10 @@ typedef void (*EbWeakLumaFilterType)(EbPictureBufferDesc *input_picture_ptr, EbP
 static EbWeakLumaFilterType FUNC_TABLE weak_luma_filter_func_ptr_array[ASM_TYPE_TOTAL] = {
     // C_DEFAULT
     eb_vp9_noise_extract_luma_weak,
+#ifdef ARCH_X86_64
     // AVX2
     eb_vp9_noise_extract_luma_weak_avx2_intrin,
+#endif
 
 };
 
@@ -56,8 +60,10 @@ void eb_vp9_noise_extract_luma_weak_sb(EbPictureBufferDesc *input_picture_ptr,
 static EbWeakLumaFilterType FUNC_TABLE weak_luma_filter_sb_func_ptr_array[ASM_TYPE_TOTAL] = {
     // C_DEFAULT
     eb_vp9_noise_extract_luma_weak_sb,
+#ifdef ARCH_X86_64
     // AVX2
     eb_vp9_noise_extract_luma_weak_sb_avx2_intrin,
+#endif
 
 };
 
@@ -69,8 +75,10 @@ typedef void (*EbStrongLumaFilterType)(EbPictureBufferDesc *input_picture_ptr,
 static EbStrongLumaFilterType FUNC_TABLE strong_luma_filter_func_ptr_array[ASM_TYPE_TOTAL] = {
     // C_DEFAULT
     eb_vp9_noise_extract_luma_strong,
+#ifdef ARCH_X86_64
     // AVX2
     eb_vp9_noise_extract_luma_strong_avx2_intrin,
+#endif
 
 };
 void eb_vp9_noise_extract_chroma_strong(EbPictureBufferDesc *input_picture_ptr,
@@ -84,8 +92,10 @@ typedef void (*EbStrongChromaFilterType)(EbPictureBufferDesc *input_picture_ptr,
 static EbStrongChromaFilterType FUNC_TABLE strong_chroma_filter_func_ptr_array[ASM_TYPE_TOTAL] = {
     // C_DEFAULT
     eb_vp9_noise_extract_chroma_strong,
+#ifdef ARCH_X86_64
     // AVX2
     eb_vp9_noise_extract_chroma_strong_avx2_intrin,
+#endif
 
 };
 
@@ -99,8 +109,10 @@ typedef void (*EbWeakChromaFilterType)(EbPictureBufferDesc *input_picture_ptr,
 static EbWeakChromaFilterType FUNC_TABLE weak_chroma_filter_func_ptr_array[ASM_TYPE_TOTAL] = {
     // C_DEFAULT
     eb_vp9_noise_extract_chroma_weak,
+#ifdef ARCH_X86_64
     // AVX2
     eb_vp9_noise_extract_chroma_weak_avx2_intrin,
+#endif
 
 };
 

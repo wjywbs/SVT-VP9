@@ -649,7 +649,8 @@ typedef void (*EbFpSearchFunc)(MeContext *context_ptr, uint32_t list_index, uint
 static EbFpSearchFunc FUNC_TABLE
     eb_vp9_get_eight_horizontal_search_point_results_all85_p_us_func_ptr_array[ASM_TYPE_TOTAL] = {
         eb_vp9_get_eight_horizontal_search_point_results_all85_p_us_c,
-#ifndef DISABLE_AVX512
+#if !defined(ARCH_X86_64)
+#elif !defined(DISABLE_AVX512)
         eb_vp9_get_eight_horizontal_search_point_results_all85_p_us_avx512_intrin
 #else
         eb_vp9_get_eight_horizontal_search_point_results_all85_p_us
@@ -2805,7 +2806,9 @@ void single_hme_quadrant_level0(
         }
 
         if (((search_area_width & 15) == 0) && ((eb_vp9_ASM_TYPES & AVX2_MASK) && 1)) {
-#ifndef DISABLE_AVX512
+#if !defined(ARCH_X86_64)
+            // Not reached: eb_vp9_ASM_TYPES is always 0 without x86 SIMD.
+#elif !defined(DISABLE_AVX512)
             eb_vp9_sad_loop_kernel_avx512_hme_l0_intrin(&context_ptr->sixteenth_sb_buffer[0],
                                                         context_ptr->sixteenth_sb_buffer_stride,
                                                         &sixteenth_ref_pic_ptr->buffer_y[search_region_index],
@@ -2980,7 +2983,9 @@ void hme_level0(
 
     if (((sb_width & 7) == 0) || (sb_width == 4)) {
         if (((search_area_width & 15) == 0) && ((eb_vp9_ASM_TYPES & AVX2_MASK) && 1)) {
-#ifndef DISABLE_AVX512
+#if !defined(ARCH_X86_64)
+            // Not reached: eb_vp9_ASM_TYPES is always 0 without x86 SIMD.
+#elif !defined(DISABLE_AVX512)
             eb_vp9_sad_loop_kernel_avx512_hme_l0_intrin(&context_ptr->sixteenth_sb_buffer[0],
                                                         context_ptr->sixteenth_sb_buffer_stride,
                                                         &sixteenth_ref_pic_ptr->buffer_y[search_region_index],

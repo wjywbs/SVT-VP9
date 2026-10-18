@@ -13,7 +13,9 @@
 #include "EbInitialRateControlResults.h"
 #include "EbPictureDemuxResults.h"
 #include "EbMotionEstimationContext.h"
+#ifdef ARCH_X86_64
 #include "emmintrin.h"
+#endif
 /**************************************
 * Macros
 **************************************/
@@ -126,7 +128,7 @@ void grass_skin_sb(SourceBasedOperationsContext *context_ptr, SequenceControlSet
     SbParams *sb_params   = &sequence_control_set_ptr->sb_params_array[sb_index];
     SbStat   *sb_stat_ptr = &(picture_control_set_ptr->sb_stat_array[sb_index]);
 
-    _mm_prefetch((const char *)sb_stat_ptr, _MM_HINT_T0);
+    EB_PREFETCH((const char *)sb_stat_ptr, _MM_HINT_T0);
 
     sb_grass_flag    = EB_FALSE;
     grass_sb_inrange = 0;
@@ -996,13 +998,13 @@ void *eb_vp9_source_based_operations_kernel(void *input_ptr) {
             EB_BOOL  is_complete_sb                                    = sb_params->is_complete_sb;
             uint8_t *y_mean_ptr                                        = picture_control_set_ptr->y_mean[sb_index];
 
-            _mm_prefetch((const char *)y_mean_ptr, _MM_HINT_T0);
+            EB_PREFETCH((const char *)y_mean_ptr, _MM_HINT_T0);
 
             uint8_t *cr_mean_ptr = picture_control_set_ptr->cr_mean[sb_index];
             uint8_t *cb_mean_ptr = picture_control_set_ptr->cb_mean[sb_index];
 
-            _mm_prefetch((const char *)cr_mean_ptr, _MM_HINT_T0);
-            _mm_prefetch((const char *)cb_mean_ptr, _MM_HINT_T0);
+            EB_PREFETCH((const char *)cr_mean_ptr, _MM_HINT_T0);
+            EB_PREFETCH((const char *)cb_mean_ptr, _MM_HINT_T0);
 
             context_ptr->y_mean_ptr  = y_mean_ptr;
             context_ptr->cr_mean_ptr = cr_mean_ptr;

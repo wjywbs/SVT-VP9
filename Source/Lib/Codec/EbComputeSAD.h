@@ -8,12 +8,16 @@
 
 #include "EbDefinitions.h"
 
+#ifdef ARCH_X86_64
 #include "EbCombinedAveragingSAD_Intrinsic_AVX2.h"
+#endif
 #include "EbComputeSAD_C.h"
+#ifdef ARCH_X86_64
 #include "EbComputeSAD_SSE2.h"
 #include "EbComputeSAD_SSE4_1.h"
 #include "EbComputeSAD_AVX2.h"
 #include "EbComputeSAD_SadLoopKernel_AVX512.h"
+#endif
 
 #include "EbUtility.h"
 
@@ -65,6 +69,7 @@ static EbSadkernelNxMType FUNC_TABLE
          /*6 48xM */ eb_vp9_fast_loop_nx_m_sad_kernel,
          /*7      */ eb_vp9_fast_loop_nx_m_sad_kernel,
          /*8 64xM */ eb_vp9_fast_loop_nx_m_sad_kernel},
+#ifdef ARCH_X86_64
         // AVX2
         {
             /*0 4xM  */ compute4x_m_sad_avx2_intrin,
@@ -77,6 +82,7 @@ static EbSadkernelNxMType FUNC_TABLE
             /*7      */ (EbSadkernelNxMType)nx_m_sad_kernel_void_func,
             /*8 64xM */ compute64x_m_sad_avx2_intrin,
         },
+#endif
 };
 
 static EbSadavgkernelNxMType FUNC_TABLE
@@ -92,6 +98,7 @@ static EbSadavgkernelNxMType FUNC_TABLE
          /*6 48xM */ eb_vp9_combined_averaging_sad,
          /*7      */ (EbSadavgkernelNxMType)nx_m_sad_kernel_void_func,
          /*8 64xM */ eb_vp9_combined_averaging_sad},
+#ifdef ARCH_X86_64
         // AVX2
         {/*0 4xM  */ eb_vp9_combined_averaging4x_msad_sse2_intrin,
          /*1 8xM  */ eb_vp9_combined_averaging8x_msad_avx2_intrin,
@@ -102,13 +109,16 @@ static EbSadavgkernelNxMType FUNC_TABLE
          /*6 48xM */ eb_vp9_combined_averaging48x_msad_avx2_intrin,
          /*7      */ (EbSadavgkernelNxMType)nx_m_sad_kernel_void_func,
          /*8 64xM */ eb_vp9_combined_averaging64x_msad_avx2_intrin},
+#endif
 };
 
 static EbSadloopkernelNxMType FUNC_TABLE nx_m_sad_loop_kernel_func_ptr_array[ASM_TYPE_TOTAL] = {
     // C_DEFAULT
     eb_vp9_sad_loop_kernel,
+#ifdef ARCH_X86_64
     // AVX2
     eb_vp9_sad_loop_kernel_avx2_intrin,
+#endif
 };
 
 #ifdef DISABLE_AVX512
@@ -116,16 +126,20 @@ static EbGeteightsaD8x8 FUNC_TABLE
     eb_vp9_get_eight_horizontal_search_point_results_8x8_16x16_func_ptr_array[ASM_TYPE_TOTAL] = {
         // C_DEFAULT
         eb_vp9_get_eight_horizontal_search_point_results_8x8_16x16_pu,
+#ifdef ARCH_X86_64
         // AVX2
         eb_vp9_get_eight_horizontal_search_point_results_8x8_16x16_pu_avx2_intrin,
+#endif
 };
 
 static EbGeteightsaD32x32 FUNC_TABLE
     eb_vp9_get_eight_horizontal_search_point_results_32x32_64x64_func_ptr_array[ASM_TYPE_TOTAL] = {
         // C_DEFAULT
         eb_vp9_get_eight_horizontal_search_point_results_32x32_64x64,
+#ifdef ARCH_X86_64
         // AVX2
         eb_vp9_get_eight_horizontal_search_point_results_32x32_64x64,
+#endif
         // eb_vp9_get_eight_horizontal_search_point_results_32x32_64x64_pu_avx2_intrin produces worse results
 };
 #endif

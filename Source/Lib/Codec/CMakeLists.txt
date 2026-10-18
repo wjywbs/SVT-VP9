@@ -24,11 +24,16 @@ file(GLOB
      "*.c")
 
 # Encoder Lib Source Files
+if(NOT COMPILE_C_ONLY)
+    set(asm_objects
+        $<TARGET_OBJECTS:VP9_ASM_AVX2>
+        $<TARGET_OBJECTS:VP9_ASM_SSE2>
+        $<TARGET_OBJECTS:VP9_ASM_SSE4_1>
+        $<TARGET_OBJECTS:VP9_ASM_SSSE3>)
+    set(asm_targets VP9_ASM_SSE2 VP9_ASM_SSSE3 VP9_ASM_SSE4_1 VP9_ASM_AVX2)
+endif()
 add_library(SvtVp9Enc
-            $<TARGET_OBJECTS:VP9_ASM_AVX2>
-            $<TARGET_OBJECTS:VP9_ASM_SSE2>
-            $<TARGET_OBJECTS:VP9_ASM_SSE4_1>
-            $<TARGET_OBJECTS:VP9_ASM_SSSE3>
+            ${asm_objects}
             $<TARGET_OBJECTS:VP9_C_DEFAULT>
             $<TARGET_OBJECTS:libVPX>
             ${all_files})
@@ -71,10 +76,7 @@ endif()
 add_dependencies(SvtVp9Enc
                  libVPX
                  VP9_C_DEFAULT
-                 VP9_ASM_SSE2
-                 VP9_ASM_SSSE3
-                 VP9_ASM_SSE4_1
-                 VP9_ASM_AVX2)
+                 ${asm_targets})
 
 # Set version number for SONAME.
 set_target_properties(SvtVp9Enc PROPERTIES SOVERSION ${SVT_VP9_SOVERSION})

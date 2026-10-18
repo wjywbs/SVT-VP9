@@ -8,7 +8,9 @@
 
 #include "EbDefinitions.h"
 #include "EbSystemResourceManager.h"
+#ifdef ARCH_X86_64
 #include "EbNoiseExtractAVX2.h"
+#endif
 
 /**************************************
  * Context

@@ -8,7 +8,9 @@
 #ifndef EBMCP_H
 #define EBMCP_H
 
+#ifdef ARCH_X86_64
 #include "EbMcp_SSE2.h"
+#endif
 #include "EbDefinitions.h"
 #include "EbUtility.h"
 #include "EbPictureBufferDesc.h"

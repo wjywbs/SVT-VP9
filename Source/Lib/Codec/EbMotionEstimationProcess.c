@@ -16,7 +16,9 @@
 #include "EbDefinitions.h"
 #include "EbComputeSAD.h"
 
+#ifdef ARCH_X86_64
 #include "emmintrin.h"
+#endif
 
 #define SQUARE_PU_NUM 85
 #define BUFF_CHECK_SIZE 128
@@ -993,7 +995,7 @@ void *eb_vp9_motion_estimation_kernel(void *input_ptr) {
                     uint32_t i;
                     for (i = 0; i < sb_height; i++) {
                         char const *p = (char const *)(src_ptr + i * input_padded_picture_ptr->stride_y);
-                        _mm_prefetch(p, _MM_HINT_T2);
+                        EB_PREFETCH(p, _MM_HINT_T2);
                     }
 
                     context_ptr->me_context_ptr->sb_src_ptr    = &input_padded_picture_ptr->buffer_y[buffer_index];

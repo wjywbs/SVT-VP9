@@ -138,7 +138,6 @@ uint32_t eb_vp9_ASM_TYPES;
  * External Functions
  **************************************/
 static EbErrorType init_svt_vp9_encoder_handle(EbComponentType *h_component);
-#include <immintrin.h>
 
 /**************************************
  * Globals
@@ -170,6 +169,7 @@ processorGroup eb_vp9_lp_group[MAX_PROCESSOR_GROUP];
 /**************************************
 * Instruction Set Support
 **************************************/
+#ifdef ARCH_X86_64
 #include <stdint.h>
 #ifdef _WIN32
 #include <intrin.h>
@@ -295,6 +295,10 @@ uint32_t get_cpu_asm_type() {
 
     return asm_type;
 }
+#else
+// No x86 SIMD kernels are built: always use the C kernels (asm_type 0).
+uint32_t get_cpu_asm_type() { return 0; }
+#endif
 
 //Get Number of logical processors
 uint32_t get_num_cores() {
@@ -391,7 +395,7 @@ EbErrorType init_thread_managment_params() {
     // Initialize eb_vp9_group_affinity structure with Current thread info
     GetThreadGroupAffinity(GetCurrentThread(), &eb_vp9_group_affinity);
     eb_vp9_num_groups = (uint8_t)GetActiveProcessorGroupCount();
-#else
+#elif defined(__linux__)
     const char *PROCESSORID      = "processor";
     const char *PHYSICALID       = "physical id";
     int         processor_id_len = EB_STRLEN(PROCESSORID, 128);
@@ -427,6 +431,8 @@ EbErrorType init_thread_managment_params() {
         }
         fclose(fin);
     }
+#else
+    eb_vp9_num_groups = 1;
 #endif
     return EB_ErrorNone;
 }

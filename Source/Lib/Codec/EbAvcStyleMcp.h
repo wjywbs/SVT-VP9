@@ -8,9 +8,11 @@
 
 #include "EbAvcStyleMcp_C.h"
 
+#ifdef ARCH_X86_64
 #include "EbAvcStyleMcp_AVX2.h"
 #include "EbAvcStyleMcp_SSE2.h"
 #include "EbAvcStyleMcp_SSSE3.h"
+#endif
 
 #include "EbPictureOperators.h"
 
@@ -20,8 +22,10 @@
 #include "EbPictureBufferDesc.h"
 #include "EbPictureControlSet.h"
 
+#ifdef ARCH_X86_64
 #include "EbCombinedAveragingSAD_Intrinsic_AVX2.h"
 #include "EbCombinedAveragingSAD_Intrinsic_AVX512.h"
+#endif
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -57,19 +61,24 @@ static const AvcStyleInterpolationFilterNew FUNC_TABLE
             eb_vp9_avc_style_luma_interpolation_filter_horizontal, //a
             eb_vp9_avc_style_luma_interpolation_filter_vertical, //d
         },
+#ifdef ARCH_X86_64
         // AVX2
         {
             eb_vp9_avc_style_copy_sse2, //copy
             eb_vp9_avc_style_luma_interpolation_filter_horizontal_avx2_intrin, //a
             eb_vp9_avc_style_luma_interpolation_filter_vertical_avx2_intrin, //d
 
-        }};
+        }
+#endif
+};
 
 static const PictureAverage FUNC_TABLE picture_average_array[ASM_TYPE_TOTAL] = {
     // C_DEFAULT
     eb_vp9_picture_average_kernel,
+#ifdef ARCH_X86_64
     // AVX2
     eb_vp9_picture_average_kernel_avx2_intrin,
+#endif
 };
 
 typedef void (*PictureAverage1Line)(EbByte src0, EbByte src1, EbByte dst, uint32_t area_width);

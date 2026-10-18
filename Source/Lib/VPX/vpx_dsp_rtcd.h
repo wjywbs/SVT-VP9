@@ -1145,539 +1145,951 @@ static void setup_rtcd_internal(uint32_t asm_type) {
     }
 
     eb_vp9_convolve8 = eb_vp9_convolve8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_convolve8 = eb_vp9_convolve8_avx2;
+#endif
     eb_vp9_convolve8_avg = eb_vp9_convolve8_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_convolve8_avg = eb_vp9_convolve8_avg_avx2;
+#endif
     eb_vp9_convolve8_avg_horiz = eb_vp9_convolve8_avg_horiz_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_convolve8_avg_horiz = eb_vp9_convolve8_avg_horiz_avx2;
+#endif
     eb_vp9_convolve8_avg_vert = eb_vp9_convolve8_avg_vert_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_convolve8_avg_vert = eb_vp9_convolve8_avg_vert_avx2;
+#endif
     eb_vp9_convolve8_horiz = eb_vp9_convolve8_horiz_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_convolve8_horiz = eb_vp9_convolve8_horiz_avx2;
+#endif
     eb_vp9_convolve8_vert = eb_vp9_convolve8_vert_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_convolve8_vert = eb_vp9_convolve8_vert_avx2;
+#endif
     eb_vpx_convolve_avg = eb_vp9_convolve_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vpx_convolve_avg = eb_vpx_convolve_avg_avx2;
+#endif
     eb_vpx_convolve_copy = eb_vp9_convolve_copy_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vpx_convolve_copy = eb_vpx_convolve_copy_avx2;
+#endif
     eb_vp9_d117_predictor_4x4 = eb_vp9_d117_predictor_4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d117_predictor_4x4 = eb_vp9_d117_predictor_4x4_ssse3;
+#endif
     eb_vp9_d117_predictor_8x8 = eb_vp9_d117_predictor_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d117_predictor_8x8 = eb_vp9_d117_predictor_8x8_ssse3;
+#endif
     eb_vp9_d117_predictor_16x16 = eb_vp9_d117_predictor_16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d117_predictor_16x16 = eb_vp9_d117_predictor_16x16_ssse3;
+#endif
     eb_vp9_d117_predictor_32x32 = eb_vp9_d117_predictor_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_d117_predictor_32x32 = eb_vp9_d117_predictor_32x32_avx2;
+#endif
     eb_vp9_d135_predictor_4x4 = eb_vp9_d135_predictor_4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d135_predictor_4x4 = eb_vp9_d135_predictor_4x4_ssse3;
+#endif
     eb_vp9_d135_predictor_8x8 = eb_vp9_d135_predictor_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d135_predictor_8x8 = eb_vp9_d135_predictor_8x8_ssse3;
+#endif
     eb_vp9_d135_predictor_16x16 = eb_vp9_d135_predictor_16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d135_predictor_16x16 = eb_vp9_d135_predictor_16x16_ssse3;
+#endif
     eb_vp9_d135_predictor_32x32 = eb_vp9_d135_predictor_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_d135_predictor_32x32 = eb_vp9_d135_predictor_32x32_avx2;
+#endif
     eb_vp9_d153_predictor_16x16 = eb_vp9_d153_predictor_16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d153_predictor_16x16 = eb_vp9_d153_predictor_16x16_ssse3;
+#endif
     eb_vp9_d153_predictor_32x32 = eb_vp9_d153_predictor_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d153_predictor_32x32 = eb_vp9_d153_predictor_32x32_ssse3;
+#endif
     eb_vp9_d153_predictor_4x4 = eb_vp9_d153_predictor_4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d153_predictor_4x4 = eb_vp9_d153_predictor_4x4_ssse3;
+#endif
     eb_vp9_d153_predictor_8x8 = eb_vp9_d153_predictor_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d153_predictor_8x8 = eb_vp9_d153_predictor_8x8_ssse3;
+#endif
     eb_vp9_d207_predictor_16x16 = eb_vp9_d207_predictor_16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d207_predictor_16x16 = eb_vp9_d207_predictor_16x16_ssse3;
+#endif
     eb_vp9_d207_predictor_32x32 = eb_vp9_d207_predictor_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d207_predictor_32x32 = eb_vp9_d207_predictor_32x32_ssse3;
+#endif
     eb_vp9_d207_predictor_4x4 = eb_vp9_d207_predictor_4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_d207_predictor_4x4 = eb_vp9_d207_predictor_4x4_sse2;
+#endif
     eb_vp9_d207_predictor_8x8 = eb_vp9_d207_predictor_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d207_predictor_8x8 = eb_vp9_d207_predictor_8x8_ssse3;
+#endif
     eb_vp9_d45_predictor_16x16 = eb_vp9_d45_predictor_16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d45_predictor_16x16 = eb_vp9_d45_predictor_16x16_ssse3;
+#endif
     eb_vp9_d45_predictor_32x32 = eb_vp9_d45_predictor_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d45_predictor_32x32 = eb_vp9_d45_predictor_32x32_ssse3;
+#endif
     eb_vp9_d45_predictor_4x4 = eb_vp9_d45_predictor_4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_d45_predictor_4x4 = eb_vp9_d45_predictor_4x4_sse2;
+#endif
     eb_vp9_d45_predictor_8x8 = eb_vp9_d45_predictor_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_d45_predictor_8x8 = eb_vp9_d45_predictor_8x8_sse2;
+#endif
     eb_vp9_d45e_predictor_4x4  = eb_vp9_d45e_predictor_4x4_c;
     eb_vp9_d63_predictor_16x16 = eb_vp9_d63_predictor_16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d63_predictor_16x16 = eb_vp9_d63_predictor_16x16_ssse3;
+#endif
     eb_vp9_d63_predictor_32x32 = eb_vp9_d63_predictor_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d63_predictor_32x32 = eb_vp9_d63_predictor_32x32_ssse3;
+#endif
     eb_vp9_d63_predictor_4x4 = eb_vp9_d63_predictor_4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d63_predictor_4x4 = eb_vp9_d63_predictor_4x4_ssse3;
+#endif
     eb_vp9_d63_predictor_8x8 = eb_vp9_d63_predictor_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_d63_predictor_8x8 = eb_vp9_d63_predictor_8x8_ssse3;
+#endif
     eb_vp9_d63e_predictor_4x4     = eb_vp9_d63e_predictor_4x4_c;
     eb_vp9_dc_128_predictor_16x16 = eb_vp9_dc_128_predictor_16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_128_predictor_16x16 = eb_vp9_dc_128_predictor_16x16_sse2;
+#endif
     eb_vp9_dc_128_predictor_32x32 = eb_vp9_dc_128_predictor_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_128_predictor_32x32 = eb_vp9_dc_128_predictor_32x32_sse2;
+#endif
     eb_vp9_dc_128_predictor_4x4 = eb_vp9_dc_128_predictor_4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_128_predictor_4x4 = eb_vp9_dc_128_predictor_4x4_sse2;
+#endif
     eb_vp9_dc_128_predictor_8x8 = eb_vp9_dc_128_predictor_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_128_predictor_8x8 = eb_vp9_dc_128_predictor_8x8_sse2;
+#endif
     eb_vp9_dc_left_predictor_16x16 = eb_vp9_dc_left_predictor_16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_left_predictor_16x16 = eb_vp9_dc_left_predictor_16x16_sse2;
+#endif
     eb_vp9_dc_left_predictor_32x32 = eb_vp9_dc_left_predictor_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_left_predictor_32x32 = eb_vp9_dc_left_predictor_32x32_sse2;
+#endif
     eb_vp9_dc_left_predictor_4x4 = eb_vp9_dc_left_predictor_4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_left_predictor_4x4 = eb_vp9_dc_left_predictor_4x4_sse2;
+#endif
     eb_vp9_dc_left_predictor_8x8 = eb_vp9_dc_left_predictor_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_left_predictor_8x8 = eb_vp9_dc_left_predictor_8x8_sse2;
+#endif
     eb_vp9_dc_predictor_16x16 = eb_vp9_dc_predictor_16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_predictor_16x16 = eb_vp9_dc_predictor_16x16_sse2;
+#endif
     eb_vp9_dc_predictor_32x32 = eb_vp9_dc_predictor_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_predictor_32x32 = eb_vp9_dc_predictor_32x32_sse2;
+#endif
     eb_vp9_dc_predictor_4x4 = eb_vp9_dc_predictor_4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_predictor_4x4 = eb_vp9_dc_predictor_4x4_sse2;
+#endif
     eb_vp9_dc_predictor_8x8 = eb_vp9_dc_predictor_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_predictor_8x8 = eb_vp9_dc_predictor_8x8_sse2;
+#endif
     eb_vp9_dc_top_predictor_16x16 = eb_vp9_dc_top_predictor_16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_top_predictor_16x16 = eb_vp9_dc_top_predictor_16x16_sse2;
+#endif
     eb_vp9_dc_top_predictor_32x32 = eb_vp9_dc_top_predictor_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_top_predictor_32x32 = eb_vp9_dc_top_predictor_32x32_sse2;
+#endif
     eb_vp9_dc_top_predictor_4x4 = eb_vp9_dc_top_predictor_4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_top_predictor_4x4 = eb_vp9_dc_top_predictor_4x4_sse2;
+#endif
     eb_vp9_dc_top_predictor_8x8 = eb_vp9_dc_top_predictor_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_dc_top_predictor_8x8 = eb_vp9_dc_top_predictor_8x8_sse2;
+#endif
 
     eb_vpx_fdct16x16 = eb_vp9_fdct16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vpx_fdct16x16 = eb_vpx_fdct16x16_avx2;
+#endif
 #if 0
     eb_vpx_fdct16x16_1 = eb_vp9_fdct16x16_1_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) eb_vpx_fdct16x16_1 = eb_vpx_fdct16x16_1_sse2;
+#endif
     //if (flags & HAS_AVX2) eb_vpx_fdct16x16 = eb_vpx_fdct16x16_avx2;
 #endif
     eb_vp9_fdct32x32 = eb_vp9_fdct32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_fdct32x32 = eb_vp9_fdct32x32_avx2;
+#endif
     eb_vpx_partial_fdct32x32 = eb_vpx_partial_fdct32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vpx_partial_fdct32x32 = eb_vpx_partial_fdct32x32_avx2;
+#endif
 #if 0
     eb_vp9_fdct32x32_1 = eb_vp9_fdct32x32_1_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) eb_vp9_fdct32x32_1 = eb_vp9_fdct32x32_1_sse2;
+#endif
     eb_vp9_fdct32x32_rd = eb_vp9_fdct32x32_rd_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) eb_vp9_fdct32x32_rd = eb_vp9_fdct32x32_rd_avx2;
 #endif
+#endif
     eb_vpx_fdct4x4 = eb_vp9_fdct4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_fdct4x4 = eb_vp9_fdct4x4_sse2;
+#endif
     eb_vp9_fdct8x8 = eb_vp9_fdct8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_fdct8x8 = eb_vp9_fdct8x8_avx2;
+#endif
 #if 0
     eb_vpx_fdct4x4_1 = eb_vp9_fdct4x4_1_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) eb_vpx_fdct4x4_1 = eb_vpx_fdct4x4_1_sse2;
+#endif
     eb_vp9_fdct8x8_1 = eb_vp9_fdct8x8_1_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) eb_vp9_fdct8x8_1 = eb_vp9_fdct8x8_1_sse2;
+#endif
     vpx_get16x16var = vpx_get16x16var_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_get16x16var = vpx_get16x16var_avx2;
+#endif
     vpx_get4x4sse_cs = vpx_get4x4sse_cs_c;
     vpx_get8x8var = vpx_get8x8var_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_get8x8var = vpx_get8x8var_sse2;
+#endif
     vpx_get_mb_ss = vpx_get_mb_ss_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_get_mb_ss = vpx_get_mb_ss_sse2;
 #endif
+#endif
     eb_vp9_h_predictor_16x16 = eb_vp9_h_predictor_16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_h_predictor_16x16 = eb_vp9_h_predictor_16x16_sse2;
+#endif
     eb_vp9_h_predictor_32x32 = eb_vp9_h_predictor_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_h_predictor_32x32 = eb_vp9_h_predictor_32x32_sse2;
+#endif
     eb_vp9_h_predictor_4x4 = eb_vp9_h_predictor_4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_h_predictor_4x4 = eb_vp9_h_predictor_4x4_sse2;
+#endif
     eb_vp9_h_predictor_8x8 = eb_vp9_h_predictor_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_h_predictor_8x8 = eb_vp9_h_predictor_8x8_sse2;
+#endif
 #if 0
     vpx_hadamard_16x16 = vpx_hadamard_16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_hadamard_16x16 = vpx_hadamard_16x16_avx2;
+#endif
     vpx_hadamard_32x32 = vpx_hadamard_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_hadamard_32x32 = vpx_hadamard_32x32_avx2;
+#endif
     vpx_hadamard_8x8 = vpx_hadamard_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_hadamard_8x8 = vpx_hadamard_8x8_sse2;
+#endif
     vpx_he_predictor_4x4 = eb_vp9_he_predictor_4x4_c;
 #endif
     eb_vpx_idct16x16_10_add = eb_vp9_idct16x16_10_add_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_idct16x16_10_add = eb_vp9_idct16x16_10_add_sse2;
+#endif
     eb_vpx_idct16x16_1_add = eb_vp9_idct16x16_1_add_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_idct16x16_1_add = eb_vp9_idct16x16_1_add_sse2;
+#endif
     eb_vpx_idct16x16_256_add = eb_vp9_idct16x16_256_add_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_idct16x16_256_add = eb_vp9_idct16x16_256_add_sse2;
+#endif
     eb_vpx_idct16x16_38_add = eb_vp9_idct16x16_38_add_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_idct16x16_38_add = eb_vp9_idct16x16_38_add_sse2;
+#endif
     eb_vp9_idct32x32_1024_add = eb_vp9_idct32x32_1024_add_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_idct32x32_1024_add = eb_vp9_idct32x32_1024_add_avx2;
+#endif
     eb_vp9_idct32x32_135_add = eb_vp9_idct32x32_135_add_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_idct32x32_135_add = eb_vp9_idct32x32_135_add_avx2;
+#endif
     eb_vpx_idct32x32_1_add = eb_vp9_idct32x32_1_add_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vpx_idct32x32_1_add = eb_vpx_idct32x32_1_add_avx2;
+#endif
     eb_vp9_idct32x32_34_add = eb_vp9_idct32x32_34_add_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_idct32x32_34_add = eb_vp9_idct32x32_34_add_avx2;
+#endif
     eb_vpx_idct4x4_16_add = eb_vp9_idct4x4_16_add_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_idct4x4_16_add = eb_vp9_idct4x4_16_add_sse2;
+#endif
     eb_vpx_idct4x4_1_add = eb_vp9_idct4x4_1_add_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_idct4x4_1_add = eb_vp9_idct4x4_1_add_sse2;
+#endif
     eb_vp9_idct8x8_12_add = eb_vp9_idct8x8_12_add_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3)
         eb_vp9_idct8x8_12_add = eb_vp9_idct8x8_12_add_ssse3;
+#endif
     eb_vpx_idct8x8_1_add = eb_vp9_idct8x8_1_add_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_idct8x8_1_add = eb_vp9_idct8x8_1_add_sse2;
+#endif
     eb_vp9_idct8x8_64_add = eb_vp9_idct8x8_64_add_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_idct8x8_64_add = eb_vp9_idct8x8_64_add_sse2;
+#endif
     eb_vp9_lpf_horizontal_16 = eb_vp9_lpf_horizontal_16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_lpf_horizontal_16 = eb_vp9_lpf_horizontal_16_avx2;
+#endif
     eb_vp9_lpf_horizontal_16_dual = eb_vp9_lpf_horizontal_16_dual_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_lpf_horizontal_16_dual = eb_vp9_lpf_horizontal_16_dual_avx2;
+#endif
     eb_vpx_lpf_horizontal_4 = eb_vp9_lpf_horizontal_4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_horizontal_4 = eb_vp9_lpf_horizontal_4_sse2;
+#endif
     eb_vpx_lpf_horizontal_4_dual = eb_vp9_lpf_horizontal_4_dual_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_horizontal_4_dual = eb_vp9_lpf_horizontal_4_dual_sse2;
+#endif
     eb_vpx_lpf_horizontal_8 = eb_vp9_lpf_horizontal_8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_horizontal_8 = eb_vp9_lpf_horizontal_8_sse2;
+#endif
     eb_vpx_lpf_horizontal_8_dual = eb_vp9_lpf_horizontal_8_dual_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_horizontal_8_dual = eb_vp9_lpf_horizontal_8_dual_sse2;
+#endif
     eb_vpx_lpf_vertical_16 = eb_vp9_lpf_vertical_16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_vertical_16 = eb_vp9_lpf_vertical_16_sse2;
+#endif
     eb_vpx_lpf_vertical_16_dual = eb_vp9_lpf_vertical_16_dual_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vpx_lpf_vertical_16_dual = eb_vpx_lpf_vertical_16_dual_avx2;
+#endif
 
     eb_vpx_lpf_vertical_4 = eb_vp9_lpf_vertical_4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_vertical_4 = eb_vp9_lpf_vertical_4_sse2;
+#endif
     eb_vpx_lpf_vertical_4_dual = eb_vp9_lpf_vertical_4_dual_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_vertical_4_dual = eb_vp9_lpf_vertical_4_dual_sse2;
+#endif
     eb_vpx_lpf_vertical_8 = eb_vp9_lpf_vertical_8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_vertical_8 = eb_vp9_lpf_vertical_8_sse2;
+#endif
     eb_vpx_lpf_vertical_8_dual = eb_vp9_lpf_vertical_8_dual_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vpx_lpf_vertical_8_dual = eb_vp9_lpf_vertical_8_dual_sse2;
+#endif
 #if 0
     eb_vpx_int_pro_col = eb_vpx_int_pro_col_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) eb_vpx_int_pro_col = eb_vpx_int_pro_col_sse2;
+#endif
     eb_vpx_int_pro_row = eb_vpx_int_pro_row_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) eb_vpx_int_pro_row = eb_vpx_int_pro_row_sse2;
+#endif
     eb_vpx_iwht4x4_16_add = eb_vp9_iwht4x4_16_add_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) eb_vpx_iwht4x4_16_add = eb_vpx_iwht4x4_16_add_sse2;
+#endif
     eb_vpx_iwht4x4_1_add = eb_vp9_iwht4x4_1_add_c;
     eb_vpx_mbpost_proc_across_ip = eb_vpx_mbpost_proc_across_ip_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) eb_vpx_mbpost_proc_across_ip = eb_vpx_mbpost_proc_across_ip_sse2;
+#endif
     eb_vpx_mbpost_proc_down = eb_vpx_mbpost_proc_down_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) eb_vpx_mbpost_proc_down = eb_vpx_mbpost_proc_down_sse2;
+#endif
     eb_vpx_minmax_8x8 = eb_vpx_minmax_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) eb_vpx_minmax_8x8 = eb_vpx_minmax_8x8_sse2;
+#endif
     eb_vp9_mse16x16 = eb_vp9_mse16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) eb_vp9_mse16x16 = eb_vp9_mse16x16_avx2;
+#endif
     eb_vp9_mse16x8 = eb_vp9_mse16x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) eb_vp9_mse16x8 = eb_vp9_mse16x8_avx2;
+#endif
     eb_vpx_mse8x16 = eb_vpx_mse8x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) eb_vpx_mse8x16 = eb_vpx_mse8x16_sse2;
+#endif
     eb_vpx_mse8x8 = eb_vpx_mse8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) eb_vpx_mse8x8 = eb_vpx_mse8x8_sse2;
 #endif
+#endif
     eb_vp9_quantize_b = eb_vp9_quantize_b_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX)
         eb_vp9_quantize_b = eb_vp9_quantize_b_avx;
+#endif
     eb_vp9_quantize_b_32x32 = eb_vp9_quantize_b_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX)
         eb_vp9_quantize_b_32x32 = eb_vp9_quantize_b_32x32_avx;
+#endif
 #if 0
     vpx_sad16x16 = vpx_sad16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad16x16 = vpx_sad16x16_sse2;
+#endif
     vpx_sad16x16_avg = vpx_sad16x16_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad16x16_avg = vpx_sad16x16_avg_sse2;
+#endif
     vpx_sad16x16x3 = vpx_sad16x16x3_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sad16x16x3 = vpx_sad16x16x3_ssse3;
+#endif
     vpx_sad16x16x4d = vpx_sad16x16x4d_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad16x16x4d = vpx_sad16x16x4d_sse2;
+#endif
     vpx_sad16x16x8 = vpx_sad16x16x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE4_1) vpx_sad16x16x8 = vpx_sad16x16x8_sse4_1;
+#endif
     vpx_sad16x32 = vpx_sad16x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad16x32 = vpx_sad16x32_sse2;
+#endif
     vpx_sad16x32_avg = vpx_sad16x32_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad16x32_avg = vpx_sad16x32_avg_sse2;
+#endif
     vpx_sad16x32x4d = vpx_sad16x32x4d_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad16x32x4d = vpx_sad16x32x4d_sse2;
+#endif
     vpx_sad16x8 = vpx_sad16x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad16x8 = vpx_sad16x8_sse2;
+#endif
     vpx_sad16x8_avg = vpx_sad16x8_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad16x8_avg = vpx_sad16x8_avg_sse2;
+#endif
     vpx_sad16x8x3 = vpx_sad16x8x3_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sad16x8x3 = vpx_sad16x8x3_ssse3;
+#endif
     vpx_sad16x8x4d = vpx_sad16x8x4d_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad16x8x4d = vpx_sad16x8x4d_sse2;
+#endif
     vpx_sad16x8x8 = vpx_sad16x8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE4_1) vpx_sad16x8x8 = vpx_sad16x8x8_sse4_1;
+#endif
     vpx_sad32x16 = vpx_sad32x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sad32x16 = vpx_sad32x16_avx2;
+#endif
     vpx_sad32x16_avg = vpx_sad32x16_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sad32x16_avg = vpx_sad32x16_avg_avx2;
+#endif
     vpx_sad32x16x4d = vpx_sad32x16x4d_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad32x16x4d = vpx_sad32x16x4d_sse2;
+#endif
     vpx_sad32x32 = vpx_sad32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sad32x32 = vpx_sad32x32_avx2;
+#endif
     vpx_sad32x32_avg = vpx_sad32x32_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sad32x32_avg = vpx_sad32x32_avg_avx2;
+#endif
     vpx_sad32x32x4d = vpx_sad32x32x4d_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sad32x32x4d = vpx_sad32x32x4d_avx2;
+#endif
     vpx_sad32x64 = vpx_sad32x64_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sad32x64 = vpx_sad32x64_avx2;
+#endif
     vpx_sad32x64_avg = vpx_sad32x64_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sad32x64_avg = vpx_sad32x64_avg_avx2;
+#endif
     vpx_sad32x64x4d = vpx_sad32x64x4d_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad32x64x4d = vpx_sad32x64x4d_sse2;
+#endif
     vpx_sad4x4 = vpx_sad4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad4x4 = vpx_sad4x4_sse2;
+#endif
     vpx_sad4x4_avg = vpx_sad4x4_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad4x4_avg = vpx_sad4x4_avg_sse2;
+#endif
     vpx_sad4x4x3 = vpx_sad4x4x3_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE3) vpx_sad4x4x3 = vpx_sad4x4x3_sse3;
+#endif
     vpx_sad4x4x4d = vpx_sad4x4x4d_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad4x4x4d = vpx_sad4x4x4d_sse2;
+#endif
     vpx_sad4x4x8 = vpx_sad4x4x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE4_1) vpx_sad4x4x8 = vpx_sad4x4x8_sse4_1;
+#endif
     vpx_sad4x8 = vpx_sad4x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad4x8 = vpx_sad4x8_sse2;
+#endif
     vpx_sad4x8_avg = vpx_sad4x8_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad4x8_avg = vpx_sad4x8_avg_sse2;
+#endif
     vpx_sad4x8x4d = vpx_sad4x8x4d_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad4x8x4d = vpx_sad4x8x4d_sse2;
+#endif
     vpx_sad64x32 = vpx_sad64x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sad64x32 = vpx_sad64x32_avx2;
+#endif
     vpx_sad64x32_avg = vpx_sad64x32_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sad64x32_avg = vpx_sad64x32_avg_avx2;
+#endif
     vpx_sad64x32x4d = vpx_sad64x32x4d_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad64x32x4d = vpx_sad64x32x4d_sse2;
+#endif
     vpx_sad64x64 = vpx_sad64x64_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sad64x64 = vpx_sad64x64_avx2;
+#endif
     vpx_sad64x64_avg = vpx_sad64x64_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sad64x64_avg = vpx_sad64x64_avg_avx2;
+#endif
     vpx_sad64x64x4d = vpx_sad64x64x4d_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sad64x64x4d = vpx_sad64x64x4d_avx2;
+#endif
     vpx_sad8x16 = vpx_sad8x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad8x16 = vpx_sad8x16_sse2;
+#endif
     vpx_sad8x16_avg = vpx_sad8x16_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad8x16_avg = vpx_sad8x16_avg_sse2;
+#endif
     vpx_sad8x16x3 = vpx_sad8x16x3_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE3) vpx_sad8x16x3 = vpx_sad8x16x3_sse3;
+#endif
     vpx_sad8x16x4d = vpx_sad8x16x4d_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad8x16x4d = vpx_sad8x16x4d_sse2;
+#endif
     vpx_sad8x16x8 = vpx_sad8x16x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE4_1) vpx_sad8x16x8 = vpx_sad8x16x8_sse4_1;
+#endif
     vpx_sad8x4 = vpx_sad8x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad8x4 = vpx_sad8x4_sse2;
+#endif
     vpx_sad8x4_avg = vpx_sad8x4_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad8x4_avg = vpx_sad8x4_avg_sse2;
+#endif
     vpx_sad8x4x4d = vpx_sad8x4x4d_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad8x4x4d = vpx_sad8x4x4d_sse2;
+#endif
     vpx_sad8x8 = vpx_sad8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad8x8 = vpx_sad8x8_sse2;
+#endif
     vpx_sad8x8_avg = vpx_sad8x8_avg_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad8x8_avg = vpx_sad8x8_avg_sse2;
+#endif
     vpx_sad8x8x3 = vpx_sad8x8x3_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE3) vpx_sad8x8x3 = vpx_sad8x8x3_sse3;
+#endif
     vpx_sad8x8x4d = vpx_sad8x8x4d_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sad8x8x4d = vpx_sad8x8x4d_sse2;
+#endif
     vpx_sad8x8x8 = vpx_sad8x8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE4_1) vpx_sad8x8x8 = vpx_sad8x8x8_sse4_1;
+#endif
     vpx_satd = vpx_satd_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_satd = vpx_satd_avx2;
+#endif
     vpx_scaled_2d = eb_vp9_scaled_2d_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_scaled_2d = vpx_scaled_2d_ssse3;
+#endif
     vpx_scaled_avg_2d = eb_vp9_scaled_avg_2d_c;
     vpx_scaled_avg_horiz = eb_vp9_scaled_avg_horiz_c;
     vpx_scaled_avg_vert = eb_vp9_scaled_avg_vert_c;
     vpx_scaled_horiz = eb_vp9_scaled_horiz_c;
     vpx_scaled_vert = eb_vp9_scaled_vert_c
     vpx_sub_pixel_avg_variance16x16 = vpx_sub_pixel_avg_variance16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_avg_variance16x16 = vpx_sub_pixel_avg_variance16x16_ssse3;
+#endif
     vpx_sub_pixel_avg_variance16x32 = vpx_sub_pixel_avg_variance16x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_avg_variance16x32 = vpx_sub_pixel_avg_variance16x32_ssse3;
+#endif
     vpx_sub_pixel_avg_variance16x8 = vpx_sub_pixel_avg_variance16x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_avg_variance16x8 = vpx_sub_pixel_avg_variance16x8_ssse3;
+#endif
     vpx_sub_pixel_avg_variance32x16 = vpx_sub_pixel_avg_variance32x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_avg_variance32x16 = vpx_sub_pixel_avg_variance32x16_ssse3;
+#endif
     vpx_sub_pixel_avg_variance32x32 = vpx_sub_pixel_avg_variance32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sub_pixel_avg_variance32x32 = vpx_sub_pixel_avg_variance32x32_avx2;
+#endif
     vpx_sub_pixel_avg_variance32x64 = vpx_sub_pixel_avg_variance32x64_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_avg_variance32x64 = vpx_sub_pixel_avg_variance32x64_ssse3;
+#endif
     vpx_sub_pixel_avg_variance4x4 = vpx_sub_pixel_avg_variance4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_avg_variance4x4 = vpx_sub_pixel_avg_variance4x4_ssse3;
+#endif
     vpx_sub_pixel_avg_variance4x8 = vpx_sub_pixel_avg_variance4x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_avg_variance4x8 = vpx_sub_pixel_avg_variance4x8_ssse3;
+#endif
     vpx_sub_pixel_avg_variance64x32 = vpx_sub_pixel_avg_variance64x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_avg_variance64x32 = vpx_sub_pixel_avg_variance64x32_ssse3;
+#endif
     vpx_sub_pixel_avg_variance64x64 = vpx_sub_pixel_avg_variance64x64_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sub_pixel_avg_variance64x64 = vpx_sub_pixel_avg_variance64x64_avx2;
+#endif
     vpx_sub_pixel_avg_variance8x16 = vpx_sub_pixel_avg_variance8x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_avg_variance8x16 = vpx_sub_pixel_avg_variance8x16_ssse3;
+#endif
     vpx_sub_pixel_avg_variance8x4 = vpx_sub_pixel_avg_variance8x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_avg_variance8x4 = vpx_sub_pixel_avg_variance8x4_ssse3;
+#endif
     vpx_sub_pixel_avg_variance8x8 = vpx_sub_pixel_avg_variance8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_avg_variance8x8 = vpx_sub_pixel_avg_variance8x8_ssse3;
+#endif
     vpx_sub_pixel_variance16x16 = vpx_sub_pixel_variance16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_variance16x16 = vpx_sub_pixel_variance16x16_ssse3;
+#endif
     vpx_sub_pixel_variance16x32 = vpx_sub_pixel_variance16x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_variance16x32 = vpx_sub_pixel_variance16x32_ssse3;
+#endif
     vpx_sub_pixel_variance16x8 = vpx_sub_pixel_variance16x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_variance16x8 = vpx_sub_pixel_variance16x8_ssse3;
+#endif
     vpx_sub_pixel_variance32x16 = vpx_sub_pixel_variance32x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_variance32x16 = vpx_sub_pixel_variance32x16_ssse3;
+#endif
     vpx_sub_pixel_variance32x32 = vpx_sub_pixel_variance32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sub_pixel_variance32x32 = vpx_sub_pixel_variance32x32_avx2;
+#endif
     vpx_sub_pixel_variance32x64 = vpx_sub_pixel_variance32x64_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_variance32x64 = vpx_sub_pixel_variance32x64_ssse3;
+#endif
     vpx_sub_pixel_variance4x4 = vpx_sub_pixel_variance4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_variance4x4 = vpx_sub_pixel_variance4x4_ssse3;
+#endif
     vpx_sub_pixel_variance4x8 = vpx_sub_pixel_variance4x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_variance4x8 = vpx_sub_pixel_variance4x8_ssse3;
+#endif
     vpx_sub_pixel_variance64x32 = vpx_sub_pixel_variance64x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_variance64x32 = vpx_sub_pixel_variance64x32_ssse3;
+#endif
     vpx_sub_pixel_variance64x64 = vpx_sub_pixel_variance64x64_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_sub_pixel_variance64x64 = vpx_sub_pixel_variance64x64_avx2;
+#endif
     vpx_sub_pixel_variance8x16 = vpx_sub_pixel_variance8x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_variance8x16 = vpx_sub_pixel_variance8x16_ssse3;
+#endif
     vpx_sub_pixel_variance8x4 = vpx_sub_pixel_variance8x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_variance8x4 = vpx_sub_pixel_variance8x4_ssse3;
+#endif
     vpx_sub_pixel_variance8x8 = vpx_sub_pixel_variance8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSSE3) vpx_sub_pixel_variance8x8 = vpx_sub_pixel_variance8x8_ssse3;
 #endif
+#endif
     svt_vpx_subtract_block = eb_vp9_subtract_block_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         svt_vpx_subtract_block = eb_vp9_subtract_block_sse2;
+#endif
 #if 0
     vpx_sum_squares_2d_i16 = vpx_sum_squares_2d_i16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_sum_squares_2d_i16 = vpx_sum_squares_2d_i16_sse2;
 #endif
+#endif
     eb_vp9_tm_predictor_16x16 = eb_vp9_tm_predictor_16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_tm_predictor_16x16 = eb_vp9_tm_predictor_16x16_sse2;
+#endif
     eb_vp9_tm_predictor_32x32 = eb_vp9_tm_predictor_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_tm_predictor_32x32 = eb_vp9_tm_predictor_32x32_sse2;
+#endif
     eb_vp9_tm_predictor_4x4 = eb_vp9_tm_predictor_4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_tm_predictor_4x4 = eb_vp9_tm_predictor_4x4_sse2;
+#endif
     eb_vp9_tm_predictor_8x8 = eb_vp9_tm_predictor_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_tm_predictor_8x8 = eb_vp9_tm_predictor_8x8_sse2;
+#endif
     eb_vp9_v_predictor_16x16 = eb_vp9_v_predictor_16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_v_predictor_16x16 = eb_vp9_v_predictor_16x16_sse2;
+#endif
     eb_vp9_v_predictor_32x32 = eb_vp9_v_predictor_32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_v_predictor_32x32 = eb_vp9_v_predictor_32x32_sse2;
+#endif
     eb_vp9_v_predictor_4x4 = eb_vp9_v_predictor_4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_v_predictor_4x4 = eb_vp9_v_predictor_4x4_sse2;
+#endif
     eb_vp9_v_predictor_8x8 = eb_vp9_v_predictor_8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2)
         eb_vp9_v_predictor_8x8 = eb_vp9_v_predictor_8x8_sse2;
+#endif
 #if 0
     vpx_variance16x16 = vpx_variance16x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_variance16x16 = vpx_variance16x16_avx2;
+#endif
     vpx_variance16x32 = vpx_variance16x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_variance16x32 = vpx_variance16x32_avx2;
+#endif
     vpx_variance16x8 = vpx_variance16x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_variance16x8 = vpx_variance16x8_avx2;
+#endif
     vpx_variance32x16 = vpx_variance32x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_variance32x16 = vpx_variance32x16_avx2;
+#endif
     vpx_variance32x32 = vpx_variance32x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_variance32x32 = vpx_variance32x32_avx2;
+#endif
     vpx_variance32x64 = vpx_variance32x64_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_variance32x64 = vpx_variance32x64_avx2;
+#endif
     vpx_variance4x4 = vpx_variance4x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_variance4x4 = vpx_variance4x4_sse2;
+#endif
     vpx_variance4x8 = vpx_variance4x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_variance4x8 = vpx_variance4x8_sse2;
+#endif
     vpx_variance64x32 = vpx_variance64x32_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_variance64x32 = vpx_variance64x32_avx2;
+#endif
     vpx_variance64x64 = vpx_variance64x64_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_AVX2) vpx_variance64x64 = vpx_variance64x64_avx2;
+#endif
     vpx_variance8x16 = vpx_variance8x16_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_variance8x16 = vpx_variance8x16_sse2;
+#endif
     vpx_variance8x4 = vpx_variance8x4_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_variance8x4 = vpx_variance8x4_sse2;
+#endif
     vpx_variance8x8 = vpx_variance8x8_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_variance8x8 = vpx_variance8x8_sse2;
+#endif
     vpx_ve_predictor_4x4 = eb_vp9_ve_predictor_4x4_c;
     vpx_vector_var = vpx_vector_var_c;
+#ifdef ARCH_X86_64
     if (flags & HAS_SSE2) vpx_vector_var = vpx_vector_var_sse2;
+#endif
 #endif
 #endif
 }

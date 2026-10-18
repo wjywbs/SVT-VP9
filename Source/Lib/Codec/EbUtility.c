@@ -13,7 +13,7 @@
 #include <stdio.h>
 
 //#endif
-#elif __linux__
+#else
 #include <stdio.h>
 #include <stdlib.h>
 #include "EbDefinitions.h"
@@ -21,9 +21,6 @@
 #include <sys/time.h>
 #include <time.h>
 //#endif
-
-#else
-#error OS/Platform not supported.
 #endif
 
 static PaBlockStats pa_get_block_stats_array[] = {

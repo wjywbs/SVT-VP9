@@ -7,9 +7,11 @@
 #define EbPictureOperators_h
 
 #include "EbPictureOperators_C.h"
+#ifdef ARCH_X86_64
 #include "EbPictureOperators_SSE2.h"
 #include "EbPictureOperators_SSE4_1.h"
 #include "EbPictureOperators_AVX2.h"
+#endif
 #include "EbDefinitions.h"
 #include "EbPictureBufferDesc.h"
 #include "EbSequenceControlSet.h"
@@ -124,6 +126,7 @@ static EbAddKernelType FUNC_TABLE addition_kernel_func_ptr_array[ASM_TYPE_TOTAL]
      /*6       */ (EbAddKernelType)eb_vp9_picture_addition_void_func,
      /*7       */ (EbAddKernelType)eb_vp9_picture_addition_void_func,
      /*8 64x64 */ eb_vp9_picture_addition_kernel},
+#ifdef ARCH_X86_64
     // AVX2
     {
         /*0 4x4   */ eb_vp9_picture_addition_kernel4x4_sse_intrin,
@@ -136,6 +139,7 @@ static EbAddKernelType FUNC_TABLE addition_kernel_func_ptr_array[ASM_TYPE_TOTAL]
         /*7       */ (EbAddKernelType)eb_vp9_picture_addition_void_func,
         /*8 64x64 */ eb_vp9_picture_addition_kernel64x64_sse2_intrin,
     },
+#endif
 };
 
 static EbPicCopyType FUNC_TABLE pic_copy_kernel_func_ptr_array[ASM_TYPE_TOTAL][9] = {
@@ -149,6 +153,7 @@ static EbPicCopyType FUNC_TABLE pic_copy_kernel_func_ptr_array[ASM_TYPE_TOTAL][9
      /*6       */ (EbPicCopyType)pic_copy_void_func,
      /*7       */ (EbPicCopyType)pic_copy_void_func,
      /*8 64x64 */ copy_kernel8_bit},
+#ifdef ARCH_X86_64
     // AVX2
     {
         /*0 4x4   */ eb_vp9_picture_copy_kernel4x4_sse_intrin,
@@ -161,6 +166,7 @@ static EbPicCopyType FUNC_TABLE pic_copy_kernel_func_ptr_array[ASM_TYPE_TOTAL][9
         /*7       */ (EbPicCopyType)pic_copy_void_func,
         /*8 64x64 */ eb_vp9_picture_copy_kernel64x64_sse2_intrin,
     },
+#endif
 };
 
 typedef void (*EbResdKernelSubsampledType)(uint8_t *input, uint32_t input_stride, uint8_t *pred, uint32_t pred_stride,
@@ -177,6 +183,7 @@ static EbResdKernelSubsampledType FUNC_TABLE eb_vp9_residual_kernel_sub_sampled_
      /*6  */ (EbResdKernelSubsampledType)pic_resd_void_func,
      /*7      */ (EbResdKernelSubsampledType)pic_resd_void_func,
      /*8 64x64 */ eb_vp9_residual_kernel_sub_sampled},
+#ifdef ARCH_X86_64
     // AVX2
     {
         /*0 4x4  */ eb_vp9_residual_kernel_sub_sampled4x4_sse_intrin,
@@ -189,6 +196,7 @@ static EbResdKernelSubsampledType FUNC_TABLE eb_vp9_residual_kernel_sub_sampled_
         /*7      */ (EbResdKernelSubsampledType)pic_resd_void_func,
         /*8 64x64 */ eb_vp9_residual_kernel_sub_sampled64x64_sse2_intrin,
     },
+#endif
 };
 
 static EbResdKernelType FUNC_TABLE eb_vp9_residual_kernel_func_ptr_array[ASM_TYPE_TOTAL][9] = {
@@ -202,6 +210,7 @@ static EbResdKernelType FUNC_TABLE eb_vp9_residual_kernel_func_ptr_array[ASM_TYP
      /*6  */ (EbResdKernelType)pic_resd_void_func,
      /*7      */ (EbResdKernelType)pic_resd_void_func,
      /*8 64x64 */ eb_vp9_residual_kernel},
+#ifdef ARCH_X86_64
     // AVX2
     {
         /*0 4x4  */ eb_vp9_residual_kernel4x4_avx2_intrin,
@@ -214,13 +223,17 @@ static EbResdKernelType FUNC_TABLE eb_vp9_residual_kernel_func_ptr_array[ASM_TYP
         /*7      */ (EbResdKernelType)pic_resd_void_func,
         /*8 64x64 */ eb_vp9_residual_kernel64x64_avx2_intrin,
     },
+#endif
 };
 
 static EbResdKernelType16Bit FUNC_TABLE eb_vp9_residual_kernel_func_ptr_array16_bit[ASM_TYPE_TOTAL] = {
     // C_DEFAULT
     eb_vp9_residual_kernel16bit,
+#ifdef ARCH_X86_64
     // AVX2
-    eb_vp9_residual_kernel16bit_sse2_intrin};
+    eb_vp9_residual_kernel16bit_sse2_intrin
+#endif
+};
 
 static EbZeroCoeffType FUNC_TABLE PicZeroOutCoef_funcPtrArray[ASM_TYPE_TOTAL][5] = {
     // C_DEFAULT
@@ -229,12 +242,14 @@ static EbZeroCoeffType FUNC_TABLE PicZeroOutCoef_funcPtrArray[ASM_TYPE_TOTAL][5]
      /*2 16x16 */ zero_out_coeff_kernel,
      /*3       */ (EbZeroCoeffType)pic_zero_out_coef_void_func,
      /*4 32x32 */ zero_out_coeff_kernel},
+#ifdef ARCH_X86_64
     // AVX2
     {/*0 4x4   */ eb_vp9_zero_out_coeff4x4_sse,
      /*1 8x8   */ eb_vp9_zero_out_coeff8x8_sse2,
      /*2 16x16 */ eb_vp9_zero_out_coeff16x16_sse2,
      /*3       */ (EbZeroCoeffType)pic_zero_out_coef_void_func,
      /*4 32x32 */ eb_vp9_zero_out_coeff32x32_sse2},
+#endif
 };
 
 static EbFullDistType FUNC_TABLE full_distortion_intrinsic_func_ptr_array[ASM_TYPE_TOTAL][2][2][9] = {
@@ -286,6 +301,7 @@ static EbFullDistType FUNC_TABLE full_distortion_intrinsic_func_ptr_array[ASM_TY
       }
 
      }},
+#ifdef ARCH_X86_64
     {{{
           /*0 4x4   */ full_distortion_kernel_eob_zero_4x4_32bit_bt_avx2,
           /*1 8x8   */ full_distortion_kernel_eob_zero_8x8_32bit_bt_avx2,
@@ -329,6 +345,7 @@ static EbFullDistType FUNC_TABLE full_distortion_intrinsic_func_ptr_array[ASM_TY
           /*7       */ (EbFullDistType)full_distortion_void_func,
           /*8 64x64 */ full_distortion_kernel_intra_16_mxn_32_bit_bt_sse2,
       }}},
+#endif
 
 };
 
@@ -345,6 +362,7 @@ static EbSpatialFullDistType FUNC_TABLE spatialfull_distortion_kernel_func_ptr_a
      eb_vp9_spatial_full_distortion_kernel,
      // 32x32
      eb_vp9_spatial_full_distortion_kernel},
+#ifdef ARCH_X86_64
     // ASM_AVX2
     {// 4x4
      spatialfull_distortion_kernel4x4_ssse3_intrin,
@@ -356,6 +374,7 @@ static EbSpatialFullDistType FUNC_TABLE spatialfull_distortion_kernel_func_ptr_a
      spatialfull_distortion_kernel16_mx_n_ssse3_intrin,
      // 64x64
      spatialfull_distortion_kernel16_mx_n_ssse3_intrin},
+#endif
 };
 
 #ifdef __cplusplus

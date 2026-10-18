@@ -143,7 +143,13 @@ typedef __int64 Off64;
 #define RC_NO_EXTRA 1
 #endif
 
+#ifdef ARCH_X86_64
 #define Log2f eb_vp9_Log2f_SSE2
+#else
+// floor(log2(x)), same as the bsr-based eb_vp9_Log2f_SSE2 (x must be non-zero)
+static inline uint32_t eb_vp9_log2f_c(uint32_t x) { return 31 - __builtin_clz(x); }
+#define Log2f eb_vp9_log2f_c
+#endif
 
 #ifndef _RSIZE_T_DEFINED
 typedef size_t rsize_t;
@@ -377,7 +383,10 @@ typedef struct EbMemoryMapEntry {
 * THIS NEEDS TO STAY IN A HEADER FOR BEST PERFORMANCE
 ********************************************************************************************/
 
+#ifdef ARCH_X86_64
 #include <immintrin.h>
+
+#define EB_PREFETCH(p, hint) _mm_prefetch((p), hint)
 
 #if !defined(__clang__) && !defined(__INTEL_COMPILER) && defined(__GNUC__)
 __attribute__((optimize("unroll-loops")))
@@ -446,6 +455,15 @@ FORCE_INLINE void eb_memcpy(void* dst_ptr, void* src_ptr, size_t size) {
 }
 
 #define EB_MEMCPY(dst, src, size) eb_memcpy(dst, src, size)
+#else
+#include <string.h>
+#define EB_MEMCPY(dst, src, size) memcpy(dst, src, size)
+#if defined(__GNUC__) || defined(__clang__)
+#define EB_PREFETCH(p, hint) __builtin_prefetch(p)
+#else
+#define EB_PREFETCH(p, hint) ((void)(p))
+#endif
+#endif
 
 #define EB_MEMSET(dst, val, count) memset(dst, val, count)
 

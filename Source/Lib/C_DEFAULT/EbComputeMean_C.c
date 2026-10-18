@@ -104,3 +104,21 @@ uint64_t eb_vp9_ComputeSubMean8x8(uint8_t *input_samples, // input parameter, in
 
     return block_mean;
 }
+
+uint64_t eb_vp9_compute_sub_mean8x8_c(uint8_t *input_samples, uint16_t input_stride) {
+    uint32_t sum = 0;
+    for (uint32_t i = 0; i < 8; i += 2) {
+        for (uint32_t j = 0; j < 8; j++) sum += input_samples[j];
+        input_samples += 2 * input_stride;
+    }
+    return (uint64_t)sum << 3;
+}
+
+uint64_t eb_vp9_compute_subd_mean_of_squared_values8x8_c(uint8_t *input_samples, uint16_t input_stride) {
+    uint32_t sum = 0;
+    for (uint32_t i = 0; i < 8; i += 2) {
+        for (uint32_t j = 0; j < 8; j++) sum += input_samples[j] * input_samples[j];
+        input_samples += 2 * input_stride;
+    }
+    return (uint64_t)sum << 11;
+}

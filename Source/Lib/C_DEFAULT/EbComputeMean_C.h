@@ -21,6 +21,12 @@ uint64_t compute_mean_of_squared_values(uint8_t *input_samples, // input paramet
                                         uint32_t input_area_width, // input parameter, input area width
                                         uint32_t input_area_height); // input parameter, input area height
 
+// C versions of eb_vp9_compute_sub_mean8x8_sse2_intrin and
+// eb_vp9_compute_subd_mean_of_squared_values8x8_sse2_intrin (bit-exact):
+// 8x8 block sampled on rows 0, 2, 4, 6.
+uint64_t eb_vp9_compute_sub_mean8x8_c(uint8_t *input_samples, uint16_t input_stride);
+uint64_t eb_vp9_compute_subd_mean_of_squared_values8x8_c(uint8_t *input_samples, uint16_t input_stride);
+
 #ifdef __cplusplus
 }
 #endif

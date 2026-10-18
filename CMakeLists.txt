@@ -20,7 +20,30 @@ if(YASM)
     endif()
 endif()
 
-project(${project_name} C ASM_NASM)
+project(${project_name} C)
+
+include(CheckCSourceCompiles)
+check_c_source_compiles("
+#if defined(_M_X64) || defined(__x86_64__)
+#else
+#error \"Non-x64\"
+#endif
+int main(void) {}
+" HAVE_X86_PLATFORM)
+
+option(COMPILE_C_ONLY "Compile only C code with no simds (autodetect, default off for x86)" OFF)
+if(NOT HAVE_X86_PLATFORM)
+    set(COMPILE_C_ONLY ON)
+endif()
+
+# The x86 SIMD kernels (intrinsics + NASM) are only built on x86-64. Elsewhere
+# (e.g. arm64) the encoder runs on the C kernels.
+if(NOT COMPILE_C_ONLY)
+    enable_language(ASM_NASM)
+    # C only: the NASM sources define ARCH_X86_64 themselves (x86inc.asm).
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DARCH_X86_64=1")
+endif()
+message(STATUS "COMPILE_C_ONLY = ${COMPILE_C_ONLY}")
 
 if(NOT MSVC AND NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -224,10 +247,12 @@ endif()
 add_subdirectory(Source/Lib/VPX)
 add_subdirectory(Source/Lib/Codec)
 add_subdirectory(Source/Lib/C_DEFAULT)
-add_subdirectory(Source/Lib/ASM_SSE2)
-add_subdirectory(Source/Lib/ASM_SSSE3)
-add_subdirectory(Source/Lib/ASM_SSE4_1)
-add_subdirectory(Source/Lib/ASM_AVX2)
+if(NOT COMPILE_C_ONLY)
+    add_subdirectory(Source/Lib/ASM_SSE2)
+    add_subdirectory(Source/Lib/ASM_SSSE3)
+    add_subdirectory(Source/Lib/ASM_SSE4_1)
+    add_subdirectory(Source/Lib/ASM_AVX2)
+endif()
 if(BUILD_APP)
     add_subdirectory(Source/App)
 endif()

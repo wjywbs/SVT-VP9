@@ -7,7 +7,9 @@
 #define EbMeSadCalculation_h
 
 #include "EbMeSadCalculation_C.h"
+#ifdef ARCH_X86_64
 #include "EbMeSadCalculation_SSE2.h"
+#endif
 
 #include "EbDefinitions.h"
 #ifdef __cplusplus
@@ -34,22 +36,29 @@ typedef void (*EbInializeBuffer32Bits)(uint32_t *pointer, uint32_t count128, uin
 static EbSadCalculation8x8and16x16Type eb_vp9_sad_calculation_8x8_16x16_func_ptr_array[ASM_TYPE_TOTAL] = {
     // C_DEFAULT
     eb_vp9_sad_calculation_8x8_16x16,
+#ifdef ARCH_X86_64
     // AVX2
     eb_vp9_sad_calculation_8x8_16x16_sse2_intrin,
+#endif
 };
 
 static EbSadCalculation32x32and64x64Type eb_vp9_sad_calculation_32x32_64x64_func_ptr_array[ASM_TYPE_TOTAL] = {
     // C_DEFAULT
     eb_vp9_sad_calculation_32x32_64x64,
+#ifdef ARCH_X86_64
     // AVX2
     eb_vp9_sad_calculation_32x32_64x64_sse2_intrin,
+#endif
 };
 
 static EbInializeBuffer32Bits eb_vp9_initialize_buffer_32bits_func_ptr_array[ASM_TYPE_TOTAL] = {
     // C_DEFAULT
     eb_vp9_initialize_buffer_32bits,
+#ifdef ARCH_X86_64
     // AVX2
-    eb_vp9_initialize_buffer_32bits_sse2_intrin};
+    eb_vp9_initialize_buffer_32bits_sse2_intrin
+#endif
+};
 
 #ifdef __cplusplus
 }

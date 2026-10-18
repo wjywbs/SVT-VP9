@@ -23,14 +23,25 @@
  ****************************************/
 #ifdef _WIN32
 #include <windows.h>
-#elif __linux__
+#else
 #include <pthread.h>
 #include <semaphore.h>
 #include <time.h>
 #include <errno.h>
-#else
-#error OS/Platform not supported.
 #endif // _WIN32
+#ifdef __APPLE__
+/* macOS has no unnamed POSIX semaphores (sem_init fails with ENOSYS). Use a
+ * mutex + condition variable instead of dispatch_semaphore: eb_vp9_destroy_thread
+ * relies on pthread_cancel, and pthread_cond_wait is a cancellation point
+ * (like sem_wait on Linux) while dispatch_semaphore_wait is not. */
+typedef struct EbCondSemaphore {
+    pthread_mutex_t mutex;
+    pthread_cond_t  cond;
+    uint32_t        count;
+} EbCondSemaphore;
+
+static void cond_semaphore_unlock(void *mutex) { pthread_mutex_unlock((pthread_mutex_t *)mutex); }
+#endif
 #if PRINTF_TIME
 #ifdef _WIN32
 #include <time.h>
@@ -133,7 +144,7 @@ EbErrorType eb_start_thread(EbHandle thread_handle) {
 
 #ifdef _WIN32
     //error_return = ResumeThread((HANDLE) thread_handle) ? EB_ErrorThreadUnresponsive : EB_ErrorNone;
-#elif __linux__
+#else
 #endif // _WIN32
 
     error_return = (thread_handle) ? EB_ErrorNone : EB_ErrorNullThread;
@@ -149,7 +160,7 @@ EbErrorType eb_stop_thread(EbHandle thread_handle) {
 
 #ifdef _WIN32
     //error_return = SuspendThread((HANDLE) thread_handle) ? EB_ErrorThreadUnresponsive : EB_ErrorNone;
-#elif __linux__
+#else
 #endif // _WIN32
 
     error_return = (thread_handle) ? EB_ErrorNone : EB_ErrorNullThread;
@@ -165,7 +176,7 @@ EbErrorType eb_vp9_destroy_thread(EbHandle thread_handle) {
 
 #ifdef _WIN32
     error_return = TerminateThread((HANDLE)thread_handle, 0) ? EB_ErrorDestroyThreadFailed : EB_ErrorNone;
-#elif __linux__
+#else
     error_return = pthread_cancel(*((pthread_t *)thread_handle)) ? EB_ErrorDestroyThreadFailed : EB_ErrorNone;
     pthread_join(*((pthread_t *)thread_handle), NULL);
     free(thread_handle);
@@ -186,7 +197,15 @@ EbHandle eb_vp9_create_semaphore(uint32_t initial_count, uint32_t max_count) {
                                                  initial_count, // initial semaphore count
                                                  max_count, // maximum semaphore count
                                                  NULL); // semaphore is not named
-#elif __linux__
+#elif defined(__APPLE__)
+    EbCondSemaphore *sem = (EbCondSemaphore *)malloc(sizeof(*sem));
+    if (sem) {
+        pthread_mutex_init(&sem->mutex, NULL);
+        pthread_cond_init(&sem->cond, NULL);
+        sem->count = initial_count;
+    }
+    semaphore_handle = sem;
+#else
     semaphore_handle = (sem_t *)malloc(sizeof(sem_t));
     sem_init((sem_t *)semaphore_handle, // semaphore handle
              0, // shared semaphore (not local)
@@ -208,7 +227,13 @@ EbErrorType eb_vp9_post_semaphore(EbHandle semaphore_handle) {
                                     NULL) // pointer to previous count (optional)
         ? EB_ErrorSemaphoreUnresponsive
         : EB_ErrorNone;
-#elif __linux__
+#elif defined(__APPLE__)
+    EbCondSemaphore *sem = (EbCondSemaphore *)semaphore_handle;
+    pthread_mutex_lock(&sem->mutex);
+    sem->count++;
+    pthread_cond_signal(&sem->cond);
+    pthread_mutex_unlock(&sem->mutex);
+#else
     return_error = sem_post((sem_t *)semaphore_handle) ? EB_ErrorSemaphoreUnresponsive : EB_ErrorNone;
 #endif // _WIN32
 
@@ -224,7 +249,14 @@ EbErrorType eb_vp9_block_on_semaphore(EbHandle semaphore_handle) {
 #ifdef _WIN32
     return_error = WaitForSingleObject((HANDLE)semaphore_handle, INFINITE) ? EB_ErrorSemaphoreUnresponsive
                                                                            : EB_ErrorNone;
-#elif __linux__
+#elif defined(__APPLE__)
+    EbCondSemaphore *sem = (EbCondSemaphore *)semaphore_handle;
+    pthread_mutex_lock(&sem->mutex);
+    pthread_cleanup_push(cond_semaphore_unlock, &sem->mutex);
+    while (sem->count == 0) pthread_cond_wait(&sem->cond, &sem->mutex);
+    sem->count--;
+    pthread_cleanup_pop(1);
+#else
     return_error = sem_wait((sem_t *)semaphore_handle) ? EB_ErrorSemaphoreUnresponsive : EB_ErrorNone;
 #endif // _WIN32
 
@@ -239,7 +271,12 @@ EbErrorType eb_vp9_destroy_semaphore(EbHandle semaphore_handle) {
 
 #ifdef _WIN32
     return_error = CloseHandle((HANDLE)semaphore_handle) ? EB_ErrorDestroySemaphoreFailed : EB_ErrorNone;
-#elif __linux__
+#elif defined(__APPLE__)
+    EbCondSemaphore *sem = (EbCondSemaphore *)semaphore_handle;
+    pthread_cond_destroy(&sem->cond);
+    pthread_mutex_destroy(&sem->mutex);
+    free(sem);
+#else
     return_error = sem_destroy((sem_t *)semaphore_handle) ? EB_ErrorDestroySemaphoreFailed : EB_ErrorNone;
     free(semaphore_handle);
 #endif // _WIN32
@@ -257,7 +294,7 @@ EbHandle eb_vp9_create_mutex(void) {
                                          FALSE, // FALSE := not initially owned
                                          NULL); // mutex is not named
 
-#elif __linux__
+#else
 
     mutex_handle = (EbHandle)malloc(sizeof(pthread_mutex_t));
     if (mutex_handle != NULL) {
@@ -277,7 +314,7 @@ EbErrorType eb_vp9_release_mutex(EbHandle mutex_handle) {
 
 #ifdef _WIN32
     return_error = ReleaseMutex((HANDLE)mutex_handle) ? EB_ErrorCreateMutexFailed : EB_ErrorNone;
-#elif __linux__
+#else
     return_error = pthread_mutex_unlock((pthread_mutex_t *)mutex_handle) ? EB_ErrorCreateMutexFailed : EB_ErrorNone;
 #endif // _WIN32
 
@@ -292,7 +329,7 @@ EbErrorType eb_vp9_block_on_mutex(EbHandle mutex_handle) {
 
 #ifdef _WIN32
     return_error = WaitForSingleObject((HANDLE)mutex_handle, INFINITE) ? EB_ErrorMutexUnresponsive : EB_ErrorNone;
-#elif __linux__
+#else
     return_error = pthread_mutex_lock((pthread_mutex_t *)mutex_handle) ? EB_ErrorMutexUnresponsive : EB_ErrorNone;
 #endif // _WIN32
 
@@ -307,7 +344,7 @@ EbErrorType eb_vp9_block_on_mutex_timeout(EbHandle mutex_handle, uint32_t timeou
 
 #ifdef _WIN32
     WaitForSingleObject((HANDLE)mutex_handle, timeout);
-#elif __linux__
+#else
     return_error = pthread_mutex_lock((pthread_mutex_t *)mutex_handle) ? EB_ErrorMutexUnresponsive : EB_ErrorNone;
     (void)timeout;
 #endif // _WIN32
@@ -323,7 +360,7 @@ EbErrorType eb_vp9_destroy_mutex(EbHandle mutex_handle) {
 
 #ifdef _WIN32
     return_error = CloseHandle((HANDLE)mutex_handle) ? EB_ErrorDestroyMutexFailed : EB_ErrorNone;
-#elif __linux__
+#else
     return_error = pthread_mutex_destroy((pthread_mutex_t *)mutex_handle) ? EB_ErrorDestroyMutexFailed : EB_ErrorNone;
     free(mutex_handle);
 #endif // _WIN32
