@@ -1856,7 +1856,10 @@ void *eb_vp9_picture_decision_kernel(void *input_ptr) {
                             picture_control_set_ptr->is_used_as_reference_flag = pred_position_ptr->is_referenced;
 
                             // Set the Decode Order
-                            if ((context_ptr->mini_gop_idr_count[mini_gop_index] == 0) &&
+                            // Low delay: no reordering, decode order is display order
+                            if (picture_control_set_ptr->pred_structure == EB_PRED_LOW_DELAY_P) {
+                                picture_control_set_ptr->decode_order = picture_control_set_ptr->picture_number;
+                            } else if ((context_ptr->mini_gop_idr_count[mini_gop_index] == 0) &&
                                 (context_ptr->mini_gop_length[mini_gop_index] ==
                                  picture_control_set_ptr->pred_struct_ptr->pred_struct_period))
 

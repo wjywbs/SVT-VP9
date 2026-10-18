@@ -2171,7 +2171,11 @@ static void copy_api_from_app(SequenceControlSet       *sequence_control_set_ptr
         ((EbSvtVp9EncConfiguration *)p_component_parameter_structure)->frame_rate_numerator;
 
     // Set default hierarchical-levels
-    if (sequence_control_set_ptr->static_config.tune != 0 &&
+    if (sequence_control_set_ptr->static_config.pred_structure == EB_PRED_LOW_DELAY_P) {
+        // Low delay: flat IPPP structure (only the flat GOP has a low-delay RPS)
+        sequence_control_set_ptr->hierarchical_levels = 0;
+        sequence_control_set_ptr->max_temporal_layers = 1;
+    } else if (sequence_control_set_ptr->static_config.tune != 0 &&
         sequence_control_set_ptr->static_config.rate_control_mode == 0) {
         sequence_control_set_ptr->hierarchical_levels = 4;
         sequence_control_set_ptr->max_temporal_layers = 4;
@@ -2307,8 +2311,8 @@ static EbErrorType verify_settings(SequenceControlSet *sequence_control_set_ptr)
         return_error = EB_ErrorBadParameter;
     }
 
-    if (config->pred_structure != 2) {
-        SVT_LOG("Error instance %u: Pred Structure must be [2]\n", channel_number + 1);
+    if (config->pred_structure != EB_PRED_LOW_DELAY_P && config->pred_structure != EB_PRED_RANDOM_ACCESS) {
+        SVT_LOG("Error instance %u: Pred Structure must be 0 (low delay P) or 2 (random access)\n", channel_number + 1);
         return_error = EB_ErrorBadParameter;
     }
 
