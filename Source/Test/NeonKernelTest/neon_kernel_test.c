@@ -21,6 +21,8 @@
 #include "EbDefinitions.h"
 #include "EbComputeSAD_C.h"
 #include "EbComputeSAD_NEON.h"
+#include "EbPictureOperators_C.h"
+#include "EbPictureOperators_NEON.h"
 #include "vpx_dsp_rtcd.h"
 #include "vp9_filter.h"
 #include "vp9_rtcd.h"
@@ -521,6 +523,84 @@ static void test_intra(void) {
 }
 
 /*******************************************
+ * Picture operators (addition, copy, distortion)
+ *******************************************/
+static void fill_s16(int16_t *p, int n, int pattern) {
+    for (int i = 0; i < n; i++) {
+        switch (pattern % 5) {
+        case 0: p[i] = (int16_t)rnd_range(-255, 255); break;
+        case 1: p[i] = (int16_t)rnd(); break; // full range: wrapping sums / squares
+        case 2: p[i] = (i & 1) ? 32767 : -32768; break;
+        case 3: p[i] = (int16_t)rnd_range(-4000, 4000); break;
+        default: p[i] = (int16_t)rnd_range(-3, 3); break;
+        }
+    }
+}
+
+static void test_picops(void) {
+    enum { S = 80, H = 64, N = S * H };
+    static const uint32_t widths[] = {4, 8, 16, 32, 64, 12, 24, 48, 6, 1, 20};
+    uint8_t *a = alloc_guarded(N), *b = alloc_guarded(N), *d_c = alloc_guarded(N), *d_n = alloc_guarded(N);
+    int16_t *c = alloc_guarded(N * 2), *r = alloc_guarded(N * 2);
+    for (int iter = 0; iter < 400; iter++) {
+        const uint32_t w = widths[iter % (sizeof(widths) / sizeof(widths[0]))];
+        const uint32_t h = (iter & 3) ? w : (uint32_t)rnd_range(1, H);
+        // the last row ends at the guard page
+        const uint32_t off = N - ((h - 1) * S + w);
+        fill_u8(a, N, iter % PAT_COUNT);
+        fill_u8(b, N, (iter / 3) % PAT_COUNT);
+        fill_s16(c, N, iter);
+        fill_s16(r, N, iter / 5);
+
+        memset(d_c, 0x55, N);
+        memset(d_n, 0x55, N);
+        eb_vp9_picture_addition_kernel(a + off, S, c + off, S, d_c + off, S, w, h);
+        eb_vp9_picture_addition_kernel_neon(a + off, S, c + off, S, d_n + off, S, w, h);
+        CHECK(!memcmp(d_c, d_n, N), "addition %ux%u", w, h);
+
+        memset(d_c, 0x55, N);
+        memset(d_n, 0x55, N);
+        copy_kernel8_bit(a + off, S, d_c + off, S, w, h);
+        eb_vp9_copy_kernel8_bit_neon(a + off, S, d_n + off, S, w, h);
+        CHECK(!memcmp(d_c, d_n, N), "copy %ux%u", w, h);
+
+        uint64_t dc[2], dn[2];
+        full_distortion_kernel32bit(c + off, S, r + off, S, dc, w, h);
+        eb_vp9_full_distortion_kernel32bit_neon(c + off, S, r + off, S, dn, w, h);
+        CHECK(dc[0] == dn[0] && dc[1] == dn[1], "full_distortion %ux%u", w, h);
+        full_distortion_kernel_eob_zero32bit(c + off, S, r + off, S, dc, w, h);
+        eb_vp9_full_distortion_kernel_eob_zero32bit_neon(c + off, S, r + off, S, dn, w, h);
+        CHECK(dc[0] == dn[0] && dc[1] == dn[1], "full_distortion_eob_zero %ux%u", w, h);
+        full_distortion_kernel_intra32bit(c + off, S, r + off, S, dc, w, h);
+        eb_vp9_full_distortion_kernel_intra32bit_neon(c + off, S, r + off, S, dn, w, h);
+        CHECK(dc[0] == dn[0] && dc[1] == dn[1], "full_distortion_intra %ux%u", w, h);
+        CHECK(eb_vp9_spatial_full_distortion_kernel(a + off, S, b + off, S, w, h) ==
+                  eb_vp9_spatial_full_distortion_kernel_neon(a + off, S, b + off, S, w, h),
+              "spatial_distortion %ux%u", w, h);
+    }
+    fill_u8(a, N, PAT_RANDOM);
+    fill_u8(b, N, PAT_RANDOM);
+    fill_s16(c, N, 0);
+    fill_s16(r, N, 0);
+    for (uint32_t w = 8; w <= 64; w *= 2) {
+        char     name[64];
+        uint64_t dd[2];
+        const int it = 4000000 / (w * w);
+        snprintf(name, sizeof(name), "addition %ux%u", w, w);
+        BENCH(name, it, eb_vp9_picture_addition_kernel(a, S, c, S, d_c, S, w, w),
+              eb_vp9_picture_addition_kernel_neon(a, S, c, S, d_n, S, w, w));
+        snprintf(name, sizeof(name), "copy %ux%u", w, w);
+        BENCH(name, it, copy_kernel8_bit(a, S, d_c, S, w, w), eb_vp9_copy_kernel8_bit_neon(a, S, d_n, S, w, w));
+        snprintf(name, sizeof(name), "full_distortion %ux%u", w, w);
+        BENCH(name, it, full_distortion_kernel32bit(c, S, r, S, dd, w, w); sink += dd[0],
+              eb_vp9_full_distortion_kernel32bit_neon(c, S, r, S, dd, w, w); sink += dd[0]);
+        snprintf(name, sizeof(name), "spatial_distortion %ux%u", w, w);
+        BENCH(name, it, sink += eb_vp9_spatial_full_distortion_kernel(a, S, b, S, w, w),
+              sink += eb_vp9_spatial_full_distortion_kernel_neon(a, S, b, S, w, w));
+    }
+}
+
+/*******************************************
  * Main
  *******************************************/
 static const struct {
@@ -535,6 +615,7 @@ static const struct {
     {"fdct", test_fdct},
     {"quantize", test_quantize},
     {"intra", test_intra},
+    {"picops", test_picops},
 };
 
 int main(int argc, char **argv) {

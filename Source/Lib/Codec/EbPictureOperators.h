@@ -12,6 +12,9 @@
 #include "EbPictureOperators_SSE4_1.h"
 #include "EbPictureOperators_AVX2.h"
 #endif
+#ifdef ARCH_AARCH64
+#include "EbPictureOperators_NEON.h"
+#endif
 #include "EbDefinitions.h"
 #include "EbPictureBufferDesc.h"
 #include "EbSequenceControlSet.h"
@@ -139,6 +142,16 @@ static EbAddKernelType FUNC_TABLE addition_kernel_func_ptr_array[ASM_TYPE_TOTAL]
         /*7       */ (EbAddKernelType)eb_vp9_picture_addition_void_func,
         /*8 64x64 */ eb_vp9_picture_addition_kernel64x64_sse2_intrin,
     },
+#elif defined(ARCH_AARCH64)
+    { eb_vp9_picture_addition_kernel_neon,
+      eb_vp9_picture_addition_kernel_neon,
+      eb_vp9_picture_addition_kernel_neon,
+      (EbAddKernelType)eb_vp9_picture_addition_void_func,
+      eb_vp9_picture_addition_kernel_neon,
+      (EbAddKernelType)eb_vp9_picture_addition_void_func,
+      (EbAddKernelType)eb_vp9_picture_addition_void_func,
+      (EbAddKernelType)eb_vp9_picture_addition_void_func,
+      eb_vp9_picture_addition_kernel_neon},
 #else
     { eb_vp9_picture_addition_kernel,
       eb_vp9_picture_addition_kernel,
@@ -176,6 +189,16 @@ static EbPicCopyType FUNC_TABLE pic_copy_kernel_func_ptr_array[ASM_TYPE_TOTAL][9
         /*7       */ (EbPicCopyType)pic_copy_void_func,
         /*8 64x64 */ eb_vp9_picture_copy_kernel64x64_sse2_intrin,
     },
+#elif defined(ARCH_AARCH64)
+    { eb_vp9_copy_kernel8_bit_neon,
+      eb_vp9_copy_kernel8_bit_neon,
+      eb_vp9_copy_kernel8_bit_neon,
+      (EbPicCopyType)pic_copy_void_func,
+      eb_vp9_copy_kernel8_bit_neon,
+      (EbPicCopyType)pic_copy_void_func,
+      (EbPicCopyType)pic_copy_void_func,
+      (EbPicCopyType)pic_copy_void_func,
+      eb_vp9_copy_kernel8_bit_neon},
 #else
     { copy_kernel8_bit,
       copy_kernel8_bit,
@@ -393,6 +416,53 @@ static EbFullDistType FUNC_TABLE full_distortion_intrinsic_func_ptr_array[ASM_TY
           /*7       */ (EbFullDistType)full_distortion_void_func,
           /*8 64x64 */ full_distortion_kernel_intra_16_mxn_32_bit_bt_sse2,
       }}},
+#elif defined(ARCH_AARCH64)
+      {{{
+           eb_vp9_full_distortion_kernel_eob_zero32bit_neon,
+           eb_vp9_full_distortion_kernel_eob_zero32bit_neon,
+           eb_vp9_full_distortion_kernel_eob_zero32bit_neon,
+           (EbFullDistType)full_distortion_void_func,
+           eb_vp9_full_distortion_kernel_eob_zero32bit_neon,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           eb_vp9_full_distortion_kernel_eob_zero32bit_neon,
+      },
+      {
+           eb_vp9_full_distortion_kernel_eob_zero32bit_neon,
+           eb_vp9_full_distortion_kernel_eob_zero32bit_neon,
+           eb_vp9_full_distortion_kernel_eob_zero32bit_neon,
+           (EbFullDistType)full_distortion_void_func,
+           eb_vp9_full_distortion_kernel_eob_zero32bit_neon,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           eb_vp9_full_distortion_kernel_eob_zero32bit_neon,
+      }},
+     {{
+           eb_vp9_full_distortion_kernel32bit_neon,
+           eb_vp9_full_distortion_kernel32bit_neon,
+           eb_vp9_full_distortion_kernel32bit_neon,
+           (EbFullDistType)full_distortion_void_func,
+           eb_vp9_full_distortion_kernel32bit_neon,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           eb_vp9_full_distortion_kernel32bit_neon,
+      },
+      {
+           eb_vp9_full_distortion_kernel_intra32bit_neon,
+           eb_vp9_full_distortion_kernel_intra32bit_neon,
+           eb_vp9_full_distortion_kernel_intra32bit_neon,
+           (EbFullDistType)full_distortion_void_func,
+           eb_vp9_full_distortion_kernel_intra32bit_neon,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           eb_vp9_full_distortion_kernel_intra32bit_neon,
+      }
+
+     }},
 #else
       {{{
            full_distortion_kernel_eob_zero32bit,
@@ -471,6 +541,17 @@ static EbSpatialFullDistType FUNC_TABLE spatialfull_distortion_kernel_func_ptr_a
      spatialfull_distortion_kernel16_mx_n_ssse3_intrin,
      // 64x64
      spatialfull_distortion_kernel16_mx_n_ssse3_intrin},
+#elif defined(ARCH_AARCH64)
+     {
+     eb_vp9_spatial_full_distortion_kernel_neon,
+     
+     eb_vp9_spatial_full_distortion_kernel_neon,
+     
+     eb_vp9_spatial_full_distortion_kernel_neon,
+     
+     eb_vp9_spatial_full_distortion_kernel_neon,
+     
+     eb_vp9_spatial_full_distortion_kernel_neon},
 #else
      {
      eb_vp9_spatial_full_distortion_kernel,
