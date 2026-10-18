@@ -21,6 +21,8 @@
 #include "EbDefinitions.h"
 #include "EbComputeSAD_C.h"
 #include "EbComputeSAD_NEON.h"
+#include "vpx_dsp_rtcd.h"
+#include "vp9_filter.h"
 
 /*******************************************
  * Utilities
@@ -248,6 +250,74 @@ static void test_eight_point(void) {
 }
 
 /*******************************************
+ * Convolution
+ *******************************************/
+typedef void (*ConvFn)(const uint8_t *, ptrdiff_t, uint8_t *, ptrdiff_t, const InterpKernel *, int, int, int, int,
+                       int, int);
+enum { DIR_NONE, DIR_H, DIR_V, DIR_2D };
+static const struct {
+    const char *name;
+    ConvFn      c, neon;
+    int         dir;
+} conv_fns[] = {
+    {"convolve8_horiz", eb_vp9_convolve8_horiz_c, eb_vp9_convolve8_horiz_neon, DIR_H},
+    {"convolve8_avg_horiz", eb_vp9_convolve8_avg_horiz_c, eb_vp9_convolve8_avg_horiz_neon, DIR_H},
+    {"convolve8_vert", eb_vp9_convolve8_vert_c, eb_vp9_convolve8_vert_neon, DIR_V},
+    {"convolve8_avg_vert", eb_vp9_convolve8_avg_vert_c, eb_vp9_convolve8_avg_vert_neon, DIR_V},
+    {"convolve8", eb_vp9_convolve8_c, eb_vp9_convolve8_neon, DIR_2D},
+    {"convolve8_avg", eb_vp9_convolve8_avg_c, eb_vp9_convolve8_avg_neon, DIR_2D},
+    {"convolve_avg", eb_vp9_convolve_avg_c, eb_vp9_convolve_avg_neon, DIR_NONE},
+    {"convolve_copy", eb_vp9_convolve_copy_c, eb_vp9_convolve_copy_neon, DIR_NONE},
+};
+
+static void test_convolve(void) {
+    const int stride = 96, size = stride * 80;
+    uint8_t  *src    = alloc_guarded(size);
+    uint8_t  *dst_c  = alloc_guarded(size);
+    uint8_t  *dst_n  = alloc_guarded(size);
+    static const int widths[]  = {4, 8, 16, 32, 64, 12, 24, 48};
+    static const int heights[] = {1, 2, 3, 4, 7, 8, 16, 32, 64};
+    for (size_t f = 0; f < sizeof(conv_fns) / sizeof(conv_fns[0]); f++) {
+        const int dir = conv_fns[f].dir;
+        for (int kernel = 0; kernel < 4; kernel++) {
+            for (size_t wi = 0; wi < sizeof(widths) / sizeof(widths[0]); wi++) {
+                for (size_t hi = 0; hi < sizeof(heights) / sizeof(heights[0]); hi++) {
+                    const int w = widths[wi], h = heights[hi];
+                    for (int t = 0; t < 8; t++) {
+                        const int pat = t < PAT_COUNT ? t : PAT_RANDOM;
+                        const int x0  = dir == DIR_V || dir == DIR_NONE ? 0 : rnd_range(1, 15);
+                        const int y0  = dir == DIR_H || dir == DIR_NONE ? 0 : rnd_range(1, 15);
+                        fill_u8(src, size, pat);
+                        fill_u8(dst_c, size, PAT_RANDOM);
+                        memcpy(dst_n, dst_c, size);
+                        // the source block is placed so the last byte the C code reads is the last buffer byte
+                        const int right = dir == DIR_H || dir == DIR_2D ? 4 : 0;
+                        const int below = dir == DIR_V || dir == DIR_2D ? 4 : 0;
+                        const uint8_t *s = src + size - ((h - 1 + below) * stride + w + right);
+                        const int      d_off = size - ((h - 1) * stride + w);
+                        conv_fns[f].c(s, stride, dst_c + d_off, stride, eb_vp9_filter_kernels[kernel], x0, 16, y0, 16, w, h);
+                        conv_fns[f].neon(s, stride, dst_n + d_off, stride, eb_vp9_filter_kernels[kernel], x0, 16, y0, 16, w, h);
+                        CHECK(!memcmp(dst_c, dst_n, size), "%s kernel%d %dx%d x0 %d y0 %d pat%d", conv_fns[f].name,
+                              kernel, w, h, x0, y0, pat);
+                    }
+                }
+            }
+        }
+    }
+    fill_u8(src, size, PAT_RANDOM);
+    const uint8_t *s = src + 4 * stride + 8;
+    for (size_t f = 0; f < sizeof(conv_fns) / sizeof(conv_fns[0]); f++) {
+        char label[64];
+        snprintf(label, sizeof(label), "%s 16x16", conv_fns[f].name);
+        BENCH(label, 300000, conv_fns[f].c(s, stride, dst_c, stride, eb_vp9_filter_kernels[0], 5, 16, 7, 16, 16, 16),
+              conv_fns[f].neon(s, stride, dst_n, stride, eb_vp9_filter_kernels[0], 5, 16, 7, 16, 16, 16));
+    }
+    BENCH("convolve8 64x64", 30000,
+          eb_vp9_convolve8_c(s, stride, dst_c, stride, eb_vp9_filter_kernels[0], 5, 16, 7, 16, 64, 64),
+          eb_vp9_convolve8_neon(s, stride, dst_n, stride, eb_vp9_filter_kernels[0], 5, 16, 7, 16, 64, 64));
+}
+
+/*******************************************
  * Main
  *******************************************/
 static const struct {
@@ -258,6 +328,7 @@ static const struct {
     {"avg_sad", test_avg_sad},
     {"sad_loop", test_sad_loop},
     {"eight_point", test_eight_point},
+    {"convolve", test_convolve},
 };
 
 int main(int argc, char **argv) {

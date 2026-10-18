@@ -68,6 +68,7 @@ void eb_vp9_convolve8_c(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, 
 void eb_vp9_convolve8_avx2(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride,
                            const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4, int w,
                            int h);
+void eb_vp9_convolve8_neon(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride, const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4, int w, int h);
 RTCD_EXTERN void (*eb_vp9_convolve8)(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride,
                                      const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4,
                                      int w, int h);
@@ -78,6 +79,7 @@ void eb_vp9_convolve8_avg_c(const uint8_t *src, ptrdiff_t src_stride, uint8_t *d
 void eb_vp9_convolve8_avg_avx2(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride,
                                const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4, int w,
                                int h);
+void eb_vp9_convolve8_avg_neon(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride, const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4, int w, int h);
 RTCD_EXTERN void (*eb_vp9_convolve8_avg)(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride,
                                          const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4,
                                          int w, int h);
@@ -88,6 +90,7 @@ void eb_vp9_convolve8_avg_horiz_c(const uint8_t *src, ptrdiff_t src_stride, uint
 void eb_vp9_convolve8_avg_horiz_avx2(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride,
                                      const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4,
                                      int w, int h);
+void eb_vp9_convolve8_avg_horiz_neon(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride, const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4, int w, int h);
 RTCD_EXTERN void (*eb_vp9_convolve8_avg_horiz)(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst,
                                                ptrdiff_t dst_stride, const InterpKernel *filter, int x0_q4,
                                                int x_step_q4, int y0_q4, int y_step_q4, int w, int h);
@@ -98,6 +101,7 @@ void eb_vp9_convolve8_avg_vert_c(const uint8_t *src, ptrdiff_t src_stride, uint8
 void eb_vp9_convolve8_avg_vert_avx2(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride,
                                     const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4,
                                     int w, int h);
+void eb_vp9_convolve8_avg_vert_neon(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride, const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4, int w, int h);
 RTCD_EXTERN void (*eb_vp9_convolve8_avg_vert)(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst,
                                               ptrdiff_t dst_stride, const InterpKernel *filter, int x0_q4,
                                               int x_step_q4, int y0_q4, int y_step_q4, int w, int h);
@@ -108,6 +112,7 @@ void eb_vp9_convolve8_horiz_c(const uint8_t *src, ptrdiff_t src_stride, uint8_t 
 void eb_vp9_convolve8_horiz_avx2(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride,
                                  const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4, int w,
                                  int h);
+void eb_vp9_convolve8_horiz_neon(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride, const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4, int w, int h);
 RTCD_EXTERN void (*eb_vp9_convolve8_horiz)(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride,
                                            const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4,
                                            int y_step_q4, int w, int h);
@@ -118,6 +123,7 @@ void eb_vp9_convolve8_vert_c(const uint8_t *src, ptrdiff_t src_stride, uint8_t *
 void eb_vp9_convolve8_vert_avx2(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride,
                                 const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4, int w,
                                 int h);
+void eb_vp9_convolve8_vert_neon(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride, const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4, int w, int h);
 RTCD_EXTERN void (*eb_vp9_convolve8_vert)(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride,
                                           const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4,
                                           int y_step_q4, int w, int h);
@@ -128,6 +134,7 @@ void eb_vp9_convolve_avg_c(const uint8_t *src, ptrdiff_t src_stride, uint8_t *ds
 void eb_vpx_convolve_avg_avx2(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride,
                               const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4, int w,
                               int h);
+void eb_vp9_convolve_avg_neon(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride, const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4, int w, int h);
 RTCD_EXTERN void (*eb_vpx_convolve_avg)(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride,
                                         const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4,
                                         int w, int h);
@@ -138,6 +145,7 @@ void eb_vp9_convolve_copy_c(const uint8_t *src, ptrdiff_t src_stride, uint8_t *d
 void eb_vpx_convolve_copy_avx2(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride,
                                const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4, int w,
                                int h);
+void eb_vp9_convolve_copy_neon(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride, const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4, int w, int h);
 RTCD_EXTERN void (*eb_vpx_convolve_copy)(const uint8_t *src, ptrdiff_t src_stride, uint8_t *dst, ptrdiff_t dst_stride,
                                          const InterpKernel *filter, int x0_q4, int x_step_q4, int y0_q4, int y_step_q4,
                                          int w, int h);
@@ -1154,40 +1162,72 @@ static void setup_rtcd_internal(uint32_t asm_type) {
     if (flags & HAS_AVX2)
         eb_vp9_convolve8 = eb_vp9_convolve8_avx2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_convolve8 = eb_vp9_convolve8_neon;
+#endif
     eb_vp9_convolve8_avg = eb_vp9_convolve8_avg_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_convolve8_avg = eb_vp9_convolve8_avg_avx2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_convolve8_avg = eb_vp9_convolve8_avg_neon;
 #endif
     eb_vp9_convolve8_avg_horiz = eb_vp9_convolve8_avg_horiz_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_convolve8_avg_horiz = eb_vp9_convolve8_avg_horiz_avx2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_convolve8_avg_horiz = eb_vp9_convolve8_avg_horiz_neon;
+#endif
     eb_vp9_convolve8_avg_vert = eb_vp9_convolve8_avg_vert_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_convolve8_avg_vert = eb_vp9_convolve8_avg_vert_avx2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_convolve8_avg_vert = eb_vp9_convolve8_avg_vert_neon;
 #endif
     eb_vp9_convolve8_horiz = eb_vp9_convolve8_horiz_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_convolve8_horiz = eb_vp9_convolve8_horiz_avx2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_convolve8_horiz = eb_vp9_convolve8_horiz_neon;
+#endif
     eb_vp9_convolve8_vert = eb_vp9_convolve8_vert_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vp9_convolve8_vert = eb_vp9_convolve8_vert_avx2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vp9_convolve8_vert = eb_vp9_convolve8_vert_neon;
 #endif
     eb_vpx_convolve_avg = eb_vp9_convolve_avg_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vpx_convolve_avg = eb_vpx_convolve_avg_avx2;
 #endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vpx_convolve_avg = eb_vp9_convolve_avg_neon;
+#endif
     eb_vpx_convolve_copy = eb_vp9_convolve_copy_c;
 #ifdef ARCH_X86_64
     if (flags & HAS_AVX2)
         eb_vpx_convolve_copy = eb_vpx_convolve_copy_avx2;
+#endif
+#ifdef ARCH_AARCH64
+    if (flags & HAS_NEON)
+        eb_vpx_convolve_copy = eb_vp9_convolve_copy_neon;
 #endif
     eb_vp9_d117_predictor_4x4 = eb_vp9_d117_predictor_4x4_c;
 #ifdef ARCH_X86_64

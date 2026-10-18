@@ -6,12 +6,9 @@
 // NEON SAD kernels. All results are bit-exact with the C kernels in EbComputeSAD_C.c, including the
 // search-order tie-breaking of the "best SAD" searches (first position in raster order wins).
 
-#include <arm_neon.h>
-
 #include "EbComputeSAD_NEON.h"
+#include "EbNeonCommon.h"
 #include "EbUtility.h"
-
-#define ALWAYS_INLINE static inline __attribute__((always_inline))
 
 /*******************************************
  * Accumulation helpers: |s - r| summed into 32-bit lanes (no overflow for any block size)
@@ -31,12 +28,6 @@ ALWAYS_INLINE uint32x2_t sad8_acc(uint32x2_t acc, uint8x8_t s, uint8x8_t r) {
     return vpadal_u16(acc, vpaddl_u8(vabd_u8(s, r)));
 }
 #endif
-
-ALWAYS_INLINE uint8x8_t load_u8_4(const uint8_t *p) {
-    uint32_t v;
-    __builtin_memcpy(&v, p, 4);
-    return vreinterpret_u8_u32(vset_lane_u32(v, vdup_n_u32(0), 0));
-}
 
 // SAD of a w x h block (any w). w is a compile-time constant in the specialized callers.
 ALWAYS_INLINE uint32_t sad_wxh(const uint8_t *src, uint32_t src_stride, const uint8_t *ref, uint32_t ref_stride,
