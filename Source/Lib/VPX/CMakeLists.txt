@@ -13,7 +13,8 @@ include_directories(${PROJECT_SOURCE_DIR}/Source/API
                     ${PROJECT_SOURCE_DIR}/Source/Lib/ASM_SSE4_1
                     ${PROJECT_SOURCE_DIR}/Source/Lib/ASM_SSSE3
                     ${PROJECT_SOURCE_DIR}/Source/Lib/C_DEFAULT
-                    ${PROJECT_SOURCE_DIR}/Source/Lib/VPX)
+                    ${PROJECT_SOURCE_DIR}/Source/Lib/VPX
+                    ${PROJECT_SOURCE_DIR}/Source/Lib/ASM_NEON)
 
 file(GLOB
      all_vpx_files

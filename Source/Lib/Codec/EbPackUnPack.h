@@ -33,6 +33,8 @@ EbEncPack2DType pack2_d_func_ptr_array_16_bit_src[2][ASM_TYPE_TOTAL] = {
 #ifdef ARCH_X86_64
         // AVX2
         eb_vp9_enc_msb_pack2_d_avx2_intrin_al, //EB_ENC_msbPack2D_AVX2
+#else
+        eb_vp9_enc_msb_pack2_d,
 #endif
     }};
 
@@ -42,6 +44,8 @@ EbEncPack2DType compressed_pack_func_ptr_array[ASM_TYPE_TOTAL] = {
 #ifdef ARCH_X86_64
     // AVX2
     eb_vp9_compressed_packmsb_avx2_intrin,
+#else
+    eb_vp9_compressed_packmsb,
 #endif
 };
 
@@ -54,6 +58,8 @@ CompPackType convert_unpack_c_pack_func_ptr_array[ASM_TYPE_TOTAL] = {
 #ifdef ARCH_X86_64
     // AVX2
     eb_vp9_c_pack_avx2_intrin,
+#else
+    eb_vp9_c_pack_c,
 #endif
 
 };
@@ -73,6 +79,7 @@ EbEncUnPack2DType unpack2_d_func_ptr_array_16_bit[2][ASM_TYPE_TOTAL] = {{
                                                                             eb_enc_msb_un_pack_2d,
 // AVX512
 #if !defined(ARCH_X86_64)
+                                                                            eb_enc_msb_un_pack_2d,
 #elif !defined(DISABLE_AVX512)
                                                                             eb_enc_msb_un_pack2_d_avx512_intrin,
 #else
@@ -91,6 +98,8 @@ EbEncUnpackAvgType eb_vp9_unpack_avg_func_ptr_array[ASM_TYPE_TOTAL] = {
 #ifdef ARCH_X86_64
     // AVX2
     eb_vp9_unpack_avg_avx2_intrin,
+#else
+    eb_vp9_unpack_avg,
 #endif
  //eb_vp9_unpack_avg_sse2_intrin,
 
@@ -105,6 +114,8 @@ EbEncUnpackAvgSubType eb_vp9_unpack_avg_safe_sub_func_ptr_array[ASM_TYPE_TOTAL] 
 #ifdef ARCH_X86_64
     // AVX2  SafeSub
     eb_vp9_unpack_avg_safe_sub_avx2_intrin
+#else
+    eb_vp9_unpack_avg_safe_sub,
 #endif
 };
 
@@ -121,6 +132,8 @@ EbEncUnPack8BitDataType unpack_8bit_func_ptr_array_16bit[2][ASM_TYPE_TOTAL] = {{
 #ifdef ARCH_X86_64
                                                                                    // AVX2
                                                                                    eb_enc_un_pack8_bit_data_sse2_intrin,
+#else
+                                                                                   unpack_8bit_data,
 #endif
                                                                                }};
 typedef void (*EbEncUnPack8BitDataSubType)(uint16_t *in16_bit_buffer, uint32_t in_stride, uint8_t *out8_bit_buffer,
@@ -132,6 +145,8 @@ EbEncUnPack8BitDataSubType unpack_8bit_safe_sub_func_ptr_array_16bit[ASM_TYPE_TO
 #ifdef ARCH_X86_64
     // SSE2
     eb_enc_un_pack8_bit_data_safe_sub_sse2_intrin
+#else
+    un_pack8_bit_data_safe_sub,
 #endif
 };
 

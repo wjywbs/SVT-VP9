@@ -295,8 +295,12 @@ uint32_t get_cpu_asm_type() {
 
     return asm_type;
 }
+#elif defined(ARCH_AARCH64)
+// NEON is part of the base AArch64 ISA. Use the SIMD row (index 1) of every kernel table; it holds the NEON
+// kernels where they exist and the C kernels elsewhere. -asm 0 still selects the C kernels everywhere.
+uint32_t get_cpu_asm_type() { return 3; }
 #else
-// No x86 SIMD kernels are built: always use the C kernels (asm_type 0).
+// No SIMD kernels are built: always use the C kernels (asm_type 0).
 uint32_t get_cpu_asm_type() { return 0; }
 #endif
 

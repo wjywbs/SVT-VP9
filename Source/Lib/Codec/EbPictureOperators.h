@@ -139,6 +139,16 @@ static EbAddKernelType FUNC_TABLE addition_kernel_func_ptr_array[ASM_TYPE_TOTAL]
         /*7       */ (EbAddKernelType)eb_vp9_picture_addition_void_func,
         /*8 64x64 */ eb_vp9_picture_addition_kernel64x64_sse2_intrin,
     },
+#else
+    { eb_vp9_picture_addition_kernel,
+      eb_vp9_picture_addition_kernel,
+      eb_vp9_picture_addition_kernel,
+      (EbAddKernelType)eb_vp9_picture_addition_void_func,
+      eb_vp9_picture_addition_kernel,
+      (EbAddKernelType)eb_vp9_picture_addition_void_func,
+      (EbAddKernelType)eb_vp9_picture_addition_void_func,
+      (EbAddKernelType)eb_vp9_picture_addition_void_func,
+      eb_vp9_picture_addition_kernel},
 #endif
 };
 
@@ -166,6 +176,16 @@ static EbPicCopyType FUNC_TABLE pic_copy_kernel_func_ptr_array[ASM_TYPE_TOTAL][9
         /*7       */ (EbPicCopyType)pic_copy_void_func,
         /*8 64x64 */ eb_vp9_picture_copy_kernel64x64_sse2_intrin,
     },
+#else
+    { copy_kernel8_bit,
+      copy_kernel8_bit,
+      copy_kernel8_bit,
+      (EbPicCopyType)pic_copy_void_func,
+      copy_kernel8_bit,
+      (EbPicCopyType)pic_copy_void_func,
+      (EbPicCopyType)pic_copy_void_func,
+      (EbPicCopyType)pic_copy_void_func,
+      copy_kernel8_bit},
 #endif
 };
 
@@ -196,6 +216,16 @@ static EbResdKernelSubsampledType FUNC_TABLE eb_vp9_residual_kernel_sub_sampled_
         /*7      */ (EbResdKernelSubsampledType)pic_resd_void_func,
         /*8 64x64 */ eb_vp9_residual_kernel_sub_sampled64x64_sse2_intrin,
     },
+#else
+    { eb_vp9_residual_kernel_sub_sampled,
+      eb_vp9_residual_kernel_sub_sampled,
+      eb_vp9_residual_kernel_sub_sampled,
+      (EbResdKernelSubsampledType)pic_resd_void_func,
+      eb_vp9_residual_kernel_sub_sampled,
+      (EbResdKernelSubsampledType)pic_resd_void_func,
+      (EbResdKernelSubsampledType)pic_resd_void_func,
+      (EbResdKernelSubsampledType)pic_resd_void_func,
+      eb_vp9_residual_kernel_sub_sampled},
 #endif
 };
 
@@ -223,6 +253,16 @@ static EbResdKernelType FUNC_TABLE eb_vp9_residual_kernel_func_ptr_array[ASM_TYP
         /*7      */ (EbResdKernelType)pic_resd_void_func,
         /*8 64x64 */ eb_vp9_residual_kernel64x64_avx2_intrin,
     },
+#else
+    { eb_vp9_residual_kernel,
+      eb_vp9_residual_kernel,
+      eb_vp9_residual_kernel,
+      (EbResdKernelType)pic_resd_void_func,
+      eb_vp9_residual_kernel,
+      (EbResdKernelType)pic_resd_void_func,
+      (EbResdKernelType)pic_resd_void_func,
+      (EbResdKernelType)pic_resd_void_func,
+      eb_vp9_residual_kernel},
 #endif
 };
 
@@ -232,6 +272,8 @@ static EbResdKernelType16Bit FUNC_TABLE eb_vp9_residual_kernel_func_ptr_array16_
 #ifdef ARCH_X86_64
     // AVX2
     eb_vp9_residual_kernel16bit_sse2_intrin
+#else
+    eb_vp9_residual_kernel16bit,
 #endif
 };
 
@@ -249,6 +291,12 @@ static EbZeroCoeffType FUNC_TABLE PicZeroOutCoef_funcPtrArray[ASM_TYPE_TOTAL][5]
      /*2 16x16 */ eb_vp9_zero_out_coeff16x16_sse2,
      /*3       */ (EbZeroCoeffType)pic_zero_out_coef_void_func,
      /*4 32x32 */ eb_vp9_zero_out_coeff32x32_sse2},
+#else
+     { zero_out_coeff_kernel,
+      zero_out_coeff_kernel,
+      zero_out_coeff_kernel,
+      (EbZeroCoeffType)pic_zero_out_coef_void_func,
+      zero_out_coeff_kernel},
 #endif
 };
 
@@ -345,6 +393,53 @@ static EbFullDistType FUNC_TABLE full_distortion_intrinsic_func_ptr_array[ASM_TY
           /*7       */ (EbFullDistType)full_distortion_void_func,
           /*8 64x64 */ full_distortion_kernel_intra_16_mxn_32_bit_bt_sse2,
       }}},
+#else
+      {{{
+           full_distortion_kernel_eob_zero32bit,
+           full_distortion_kernel_eob_zero32bit,
+           full_distortion_kernel_eob_zero32bit,
+           (EbFullDistType)full_distortion_void_func,
+           full_distortion_kernel_eob_zero32bit,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           full_distortion_kernel_eob_zero32bit,
+      },
+      {
+           full_distortion_kernel_eob_zero32bit,
+           full_distortion_kernel_eob_zero32bit,
+           full_distortion_kernel_eob_zero32bit,
+           (EbFullDistType)full_distortion_void_func,
+           full_distortion_kernel_eob_zero32bit,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           full_distortion_kernel_eob_zero32bit,
+      }},
+     {{
+           full_distortion_kernel32bit,
+           full_distortion_kernel32bit,
+           full_distortion_kernel32bit,
+           (EbFullDistType)full_distortion_void_func,
+           full_distortion_kernel32bit,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           full_distortion_kernel32bit,
+      },
+      {
+           full_distortion_kernel_intra32bit,
+           full_distortion_kernel_intra32bit,
+           full_distortion_kernel_intra32bit,
+           (EbFullDistType)full_distortion_void_func,
+           full_distortion_kernel_intra32bit,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           (EbFullDistType)full_distortion_void_func,
+           full_distortion_kernel_intra32bit,
+      }
+
+     }},
 #endif
 
 };
@@ -376,6 +471,17 @@ static EbSpatialFullDistType FUNC_TABLE spatialfull_distortion_kernel_func_ptr_a
      spatialfull_distortion_kernel16_mx_n_ssse3_intrin,
      // 64x64
      spatialfull_distortion_kernel16_mx_n_ssse3_intrin},
+#else
+     {
+     eb_vp9_spatial_full_distortion_kernel,
+     
+     eb_vp9_spatial_full_distortion_kernel,
+     
+     eb_vp9_spatial_full_distortion_kernel,
+     
+     eb_vp9_spatial_full_distortion_kernel,
+     
+     eb_vp9_spatial_full_distortion_kernel},
 #endif
 };
 

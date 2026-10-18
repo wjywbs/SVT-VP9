@@ -650,6 +650,7 @@ static EbFpSearchFunc FUNC_TABLE
     eb_vp9_get_eight_horizontal_search_point_results_all85_p_us_func_ptr_array[ASM_TYPE_TOTAL] = {
         eb_vp9_get_eight_horizontal_search_point_results_all85_p_us_c,
 #if !defined(ARCH_X86_64)
+        eb_vp9_get_eight_horizontal_search_point_results_all85_p_us_c,
 #elif !defined(DISABLE_AVX512)
         eb_vp9_get_eight_horizontal_search_point_results_all85_p_us_avx512_intrin
 #else
@@ -2806,8 +2807,23 @@ void single_hme_quadrant_level0(
         }
 
         if (((search_area_width & 15) == 0) && ((eb_vp9_ASM_TYPES & AVX2_MASK) && 1)) {
-#if !defined(ARCH_X86_64)
-            // Not reached: eb_vp9_ASM_TYPES is always 0 without x86 SIMD.
+#if defined(ARCH_AARCH64)
+            eb_vp9_sad_loop_kernel_neon(&context_ptr->sixteenth_sb_buffer[0],
+                                        context_ptr->sixteenth_sb_buffer_stride,
+                                        &sixteenth_ref_pic_ptr->buffer_y[search_region_index],
+                                        sixteenth_ref_pic_ptr->stride_y * 2,
+                                        sb_height >> 1,
+                                        sb_width,
+                                        // results
+                                        level0_best_sad,
+                                        x_level0_search_center,
+                                        y_level0_search_center,
+                                        // range
+                                        sixteenth_ref_pic_ptr->stride_y,
+                                        search_area_width,
+                                        search_area_height);
+#elif !defined(ARCH_X86_64)
+            // Not reached: eb_vp9_ASM_TYPES is always 0 without SIMD kernels.
 #elif !defined(DISABLE_AVX512)
             eb_vp9_sad_loop_kernel_avx512_hme_l0_intrin(&context_ptr->sixteenth_sb_buffer[0],
                                                         context_ptr->sixteenth_sb_buffer_stride,
@@ -2983,8 +2999,23 @@ void hme_level0(
 
     if (((sb_width & 7) == 0) || (sb_width == 4)) {
         if (((search_area_width & 15) == 0) && ((eb_vp9_ASM_TYPES & AVX2_MASK) && 1)) {
-#if !defined(ARCH_X86_64)
-            // Not reached: eb_vp9_ASM_TYPES is always 0 without x86 SIMD.
+#if defined(ARCH_AARCH64)
+            eb_vp9_sad_loop_kernel_neon(&context_ptr->sixteenth_sb_buffer[0],
+                                        context_ptr->sixteenth_sb_buffer_stride,
+                                        &sixteenth_ref_pic_ptr->buffer_y[search_region_index],
+                                        sixteenth_ref_pic_ptr->stride_y * 2,
+                                        sb_height >> 1,
+                                        sb_width,
+                                        // results
+                                        level0_best_sad,
+                                        x_level0_search_center,
+                                        y_level0_search_center,
+                                        // range
+                                        sixteenth_ref_pic_ptr->stride_y,
+                                        search_area_width,
+                                        search_area_height);
+#elif !defined(ARCH_X86_64)
+            // Not reached: eb_vp9_ASM_TYPES is always 0 without SIMD kernels.
 #elif !defined(DISABLE_AVX512)
             eb_vp9_sad_loop_kernel_avx512_hme_l0_intrin(&context_ptr->sixteenth_sb_buffer[0],
                                                         context_ptr->sixteenth_sb_buffer_stride,

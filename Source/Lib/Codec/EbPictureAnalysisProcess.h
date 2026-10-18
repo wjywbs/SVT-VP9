@@ -48,6 +48,8 @@ static EbWeakLumaFilterType FUNC_TABLE weak_luma_filter_func_ptr_array[ASM_TYPE_
 #ifdef ARCH_X86_64
     // AVX2
     eb_vp9_noise_extract_luma_weak_avx2_intrin,
+#else
+    eb_vp9_noise_extract_luma_weak,
 #endif
 
 };
@@ -63,6 +65,8 @@ static EbWeakLumaFilterType FUNC_TABLE weak_luma_filter_sb_func_ptr_array[ASM_TY
 #ifdef ARCH_X86_64
     // AVX2
     eb_vp9_noise_extract_luma_weak_sb_avx2_intrin,
+#else
+    eb_vp9_noise_extract_luma_weak_sb,
 #endif
 
 };
@@ -78,6 +82,8 @@ static EbStrongLumaFilterType FUNC_TABLE strong_luma_filter_func_ptr_array[ASM_T
 #ifdef ARCH_X86_64
     // AVX2
     eb_vp9_noise_extract_luma_strong_avx2_intrin,
+#else
+    eb_vp9_noise_extract_luma_strong,
 #endif
 
 };
@@ -95,6 +101,8 @@ static EbStrongChromaFilterType FUNC_TABLE strong_chroma_filter_func_ptr_array[A
 #ifdef ARCH_X86_64
     // AVX2
     eb_vp9_noise_extract_chroma_strong_avx2_intrin,
+#else
+    eb_vp9_noise_extract_chroma_strong,
 #endif
 
 };
@@ -112,6 +120,8 @@ static EbWeakChromaFilterType FUNC_TABLE weak_chroma_filter_func_ptr_array[ASM_T
 #ifdef ARCH_X86_64
     // AVX2
     eb_vp9_noise_extract_chroma_weak_avx2_intrin,
+#else
+    eb_vp9_noise_extract_chroma_weak,
 #endif
 
 };

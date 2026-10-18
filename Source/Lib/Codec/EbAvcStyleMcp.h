@@ -69,6 +69,12 @@ static const AvcStyleInterpolationFilterNew FUNC_TABLE
             eb_vp9_avc_style_luma_interpolation_filter_vertical_avx2_intrin, //d
 
         }
+#else
+        {
+            avc_style_copy_new, 
+            eb_vp9_avc_style_luma_interpolation_filter_horizontal, 
+            eb_vp9_avc_style_luma_interpolation_filter_vertical, 
+        },
 #endif
 };
 
@@ -78,6 +84,8 @@ static const PictureAverage FUNC_TABLE picture_average_array[ASM_TYPE_TOTAL] = {
 #ifdef ARCH_X86_64
     // AVX2
     eb_vp9_picture_average_kernel_avx2_intrin,
+#else
+    eb_vp9_picture_average_kernel,
 #endif
 };
 

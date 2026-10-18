@@ -18,6 +18,9 @@
 #include "EbComputeSAD_AVX2.h"
 #include "EbComputeSAD_SadLoopKernel_AVX512.h"
 #endif
+#ifdef ARCH_AARCH64
+#include "EbComputeSAD_NEON.h"
+#endif
 
 #include "EbUtility.h"
 
@@ -82,6 +85,29 @@ static EbSadkernelNxMType FUNC_TABLE
             /*7      */ (EbSadkernelNxMType)nx_m_sad_kernel_void_func,
             /*8 64xM */ compute64x_m_sad_avx2_intrin,
         },
+#elif defined(ARCH_AARCH64)
+        // NEON
+        {
+            /*0 4xM  */ eb_vp9_compute4x_m_sad_neon,
+            /*1 8xM  */ eb_vp9_compute8x_m_sad_neon,
+            /*2 16xM */ eb_vp9_compute16x_m_sad_neon,
+            /*3 24xM */ eb_vp9_compute24x_m_sad_neon,
+            /*4 32xM */ eb_vp9_compute32x_m_sad_neon,
+            /*5      */ eb_vp9_fast_loop_nx_m_sad_kernel_neon,
+            /*6 48xM */ eb_vp9_compute48x_m_sad_neon,
+            /*7      */ eb_vp9_fast_loop_nx_m_sad_kernel_neon,
+            /*8 64xM */ eb_vp9_compute64x_m_sad_neon,
+        },
+#else
+        {eb_vp9_fast_loop_nx_m_sad_kernel,
+          eb_vp9_fast_loop_nx_m_sad_kernel,
+          eb_vp9_fast_loop_nx_m_sad_kernel,
+          eb_vp9_fast_loop_nx_m_sad_kernel,
+          eb_vp9_fast_loop_nx_m_sad_kernel,
+          eb_vp9_fast_loop_nx_m_sad_kernel,
+          eb_vp9_fast_loop_nx_m_sad_kernel,
+          eb_vp9_fast_loop_nx_m_sad_kernel,
+          eb_vp9_fast_loop_nx_m_sad_kernel},
 #endif
 };
 
@@ -109,6 +135,27 @@ static EbSadavgkernelNxMType FUNC_TABLE
          /*6 48xM */ eb_vp9_combined_averaging48x_msad_avx2_intrin,
          /*7      */ (EbSadavgkernelNxMType)nx_m_sad_kernel_void_func,
          /*8 64xM */ eb_vp9_combined_averaging64x_msad_avx2_intrin},
+#elif defined(ARCH_AARCH64)
+        // NEON
+        {/*0 4xM  */ eb_vp9_combined_averaging_sad_neon,
+         /*1 8xM  */ eb_vp9_combined_averaging_sad_neon,
+         /*2 16xM */ eb_vp9_combined_averaging_sad_neon,
+         /*3 24xM */ eb_vp9_combined_averaging_sad_neon,
+         /*4 32xM */ eb_vp9_combined_averaging_sad_neon,
+         /*5      */ eb_vp9_combined_averaging_sad_neon,
+         /*6 48xM */ eb_vp9_combined_averaging_sad_neon,
+         /*7      */ eb_vp9_combined_averaging_sad_neon,
+         /*8 64xM */ eb_vp9_combined_averaging_sad_neon},
+#else
+        {eb_vp9_combined_averaging_sad,
+          eb_vp9_combined_averaging_sad,
+          eb_vp9_combined_averaging_sad,
+          eb_vp9_combined_averaging_sad,
+          eb_vp9_combined_averaging_sad,
+          (EbSadavgkernelNxMType)nx_m_sad_kernel_void_func,
+          eb_vp9_combined_averaging_sad,
+          (EbSadavgkernelNxMType)nx_m_sad_kernel_void_func,
+          eb_vp9_combined_averaging_sad},
 #endif
 };
 
@@ -118,6 +165,11 @@ static EbSadloopkernelNxMType FUNC_TABLE nx_m_sad_loop_kernel_func_ptr_array[ASM
 #ifdef ARCH_X86_64
     // AVX2
     eb_vp9_sad_loop_kernel_avx2_intrin,
+#elif defined(ARCH_AARCH64)
+    // NEON
+    eb_vp9_sad_loop_kernel_neon,
+#else
+    eb_vp9_sad_loop_kernel,
 #endif
 };
 
@@ -129,6 +181,11 @@ static EbGeteightsaD8x8 FUNC_TABLE
 #ifdef ARCH_X86_64
         // AVX2
         eb_vp9_get_eight_horizontal_search_point_results_8x8_16x16_pu_avx2_intrin,
+#elif defined(ARCH_AARCH64)
+        // NEON
+        eb_vp9_get_eight_horizontal_search_point_results_8x8_16x16_pu_neon,
+#else
+        eb_vp9_get_eight_horizontal_search_point_results_8x8_16x16_pu,
 #endif
 };
 
@@ -138,6 +195,8 @@ static EbGeteightsaD32x32 FUNC_TABLE
         eb_vp9_get_eight_horizontal_search_point_results_32x32_64x64,
 #ifdef ARCH_X86_64
         // AVX2
+        eb_vp9_get_eight_horizontal_search_point_results_32x32_64x64,
+#else
         eb_vp9_get_eight_horizontal_search_point_results_32x32_64x64,
 #endif
         // eb_vp9_get_eight_horizontal_search_point_results_32x32_64x64_pu_avx2_intrin produces worse results

@@ -11,7 +11,8 @@ include_directories(${PROJECT_SOURCE_DIR}/Source/API
                     ${PROJECT_SOURCE_DIR}/Source/Lib/ASM_SSE2
                     ${PROJECT_SOURCE_DIR}/Source/Lib/ASM_SSSE3
                     ${PROJECT_SOURCE_DIR}/Source/Lib/ASM_SSE4_1
-                    ${PROJECT_SOURCE_DIR}/Source/Lib/ASM_AVX2)
+                    ${PROJECT_SOURCE_DIR}/Source/Lib/ASM_AVX2
+                    ${PROJECT_SOURCE_DIR}/Source/Lib/ASM_NEON)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY
     ${PROJECT_SOURCE_DIR}/Bin/${CMAKE_BUILD_TYPE})
@@ -24,13 +25,16 @@ file(GLOB
      "*.c")
 
 # Encoder Lib Source Files
-if(NOT COMPILE_C_ONLY)
+if(NOT COMPILE_C_ONLY AND HAVE_X86_PLATFORM)
     set(asm_objects
         $<TARGET_OBJECTS:VP9_ASM_AVX2>
         $<TARGET_OBJECTS:VP9_ASM_SSE2>
         $<TARGET_OBJECTS:VP9_ASM_SSE4_1>
         $<TARGET_OBJECTS:VP9_ASM_SSSE3>)
     set(asm_targets VP9_ASM_SSE2 VP9_ASM_SSSE3 VP9_ASM_SSE4_1 VP9_ASM_AVX2)
+elseif(NOT COMPILE_C_ONLY AND HAVE_ARM64_PLATFORM)
+    set(asm_objects $<TARGET_OBJECTS:VP9_ASM_NEON>)
+    set(asm_targets VP9_ASM_NEON)
 endif()
 add_library(SvtVp9Enc
             ${asm_objects}

@@ -39,6 +39,8 @@ static EbSadCalculation8x8and16x16Type eb_vp9_sad_calculation_8x8_16x16_func_ptr
 #ifdef ARCH_X86_64
     // AVX2
     eb_vp9_sad_calculation_8x8_16x16_sse2_intrin,
+#else
+    eb_vp9_sad_calculation_8x8_16x16,
 #endif
 };
 
@@ -48,6 +50,8 @@ static EbSadCalculation32x32and64x64Type eb_vp9_sad_calculation_32x32_64x64_func
 #ifdef ARCH_X86_64
     // AVX2
     eb_vp9_sad_calculation_32x32_64x64_sse2_intrin,
+#else
+    eb_vp9_sad_calculation_32x32_64x64,
 #endif
 };
 
@@ -57,6 +61,8 @@ static EbInializeBuffer32Bits eb_vp9_initialize_buffer_32bits_func_ptr_array[ASM
 #ifdef ARCH_X86_64
     // AVX2
     eb_vp9_initialize_buffer_32bits_sse2_intrin
+#else
+    eb_vp9_initialize_buffer_32bits,
 #endif
 };
 

@@ -31,17 +31,29 @@ check_c_source_compiles("
 int main(void) {}
 " HAVE_X86_PLATFORM)
 
-option(COMPILE_C_ONLY "Compile only C code with no simds (autodetect, default off for x86)" OFF)
-if(NOT HAVE_X86_PLATFORM)
+check_c_source_compiles("
+#if defined(__aarch64__) || defined(_M_ARM64)
+#else
+#error \"Non-arm64\"
+#endif
+int main(void) {}
+" HAVE_ARM64_PLATFORM)
+
+option(COMPILE_C_ONLY "Compile only C code with no simds (autodetect, default off for x86 and arm64)" OFF)
+if(NOT HAVE_X86_PLATFORM AND NOT HAVE_ARM64_PLATFORM)
     set(COMPILE_C_ONLY ON)
 endif()
 
 # The x86 SIMD kernels (intrinsics + NASM) are only built on x86-64. Elsewhere
 # (e.g. arm64) the encoder runs on the C kernels.
-if(NOT COMPILE_C_ONLY)
+if(NOT COMPILE_C_ONLY AND HAVE_X86_PLATFORM)
     enable_language(ASM_NASM)
     # C only: the NASM sources define ARCH_X86_64 themselves (x86inc.asm).
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DARCH_X86_64=1")
+endif()
+# arm64: NEON kernels (Source/Lib/ASM_NEON). NEON is part of the base AArch64 ISA.
+if(NOT COMPILE_C_ONLY AND HAVE_ARM64_PLATFORM)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DARCH_AARCH64=1")
 endif()
 message(STATUS "COMPILE_C_ONLY = ${COMPILE_C_ONLY}")
 
@@ -251,14 +263,21 @@ endif()
 add_subdirectory(Source/Lib/VPX)
 add_subdirectory(Source/Lib/Codec)
 add_subdirectory(Source/Lib/C_DEFAULT)
-if(NOT COMPILE_C_ONLY)
+if(NOT COMPILE_C_ONLY AND HAVE_X86_PLATFORM)
     add_subdirectory(Source/Lib/ASM_SSE2)
     add_subdirectory(Source/Lib/ASM_SSSE3)
     add_subdirectory(Source/Lib/ASM_SSE4_1)
     add_subdirectory(Source/Lib/ASM_AVX2)
 endif()
+if(NOT COMPILE_C_ONLY AND HAVE_ARM64_PLATFORM)
+    add_subdirectory(Source/Lib/ASM_NEON)
+endif()
 if(BUILD_APP)
     add_subdirectory(Source/App)
+endif()
+option(BUILD_NEON_TEST "Build the NEON kernel test (arm64, static library)" OFF)
+if(BUILD_NEON_TEST AND HAVE_ARM64_PLATFORM AND NOT COMPILE_C_ONLY)
+    add_subdirectory(Source/Test/NeonKernelTest)
 endif()
 
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/Source/API/

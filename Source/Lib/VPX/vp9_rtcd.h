@@ -156,6 +156,10 @@ static void setup_rtcd_internal_vp9(uint32_t asm_type) {
         flags |= HAS_SSE;
         flags |= HAS_MMX;
     }
+#ifdef ARCH_AARCH64
+    if (asm_type)
+        flags |= HAS_NEON;
+#endif
 
 #if 0
         eb_vp9_block_error = eb_vp9_block_error_c;

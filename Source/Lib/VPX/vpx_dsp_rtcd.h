@@ -21,6 +21,7 @@
 #define HAS_AVX 0x040
 #define HAS_AVX2 0x080
 #define HAS_AVX512 0x100
+#define HAS_NEON 0x200
 
 #define INLINE __inline
 
@@ -1143,6 +1144,10 @@ static void setup_rtcd_internal(uint32_t asm_type) {
         flags |= HAS_SSE;
         flags |= HAS_MMX;
     }
+#ifdef ARCH_AARCH64
+    if (asm_type)
+        flags |= HAS_NEON;
+#endif
 
     eb_vp9_convolve8 = eb_vp9_convolve8_c;
 #ifdef ARCH_X86_64
